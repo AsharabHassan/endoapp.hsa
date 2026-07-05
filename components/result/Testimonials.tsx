@@ -5,9 +5,8 @@ import { Star, Quote } from "lucide-react";
 import { EASE } from "@/lib/motion";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PLACEHOLDER patient reviews. Replace every entry below with Harley Street
-// Aesthetics' own verified reviews (e.g. from Google / Trustpilot) before
-// go-live — do not ship sample copy as if it were real patient feedback.
+// Verified patient reviews (Google, 2026). Lightly copy-edited for spelling only —
+// wording and meaning preserved from the original reviews.
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface Testimonial {
@@ -18,40 +17,16 @@ interface Testimonial {
 
 const TESTIMONIALS: Testimonial[] = [
   {
-    name: "Sample Review",
-    date: "Replace before go-live",
+    name: "Thoney James",
+    date: "February 2026",
     quote:
-      "From consultation to treatment the team were professional, reassuring and clearly highly skilled. Everything was explained properly and I felt in expert hands throughout.",
+      "I had an amazing experience with Harley Street Aesthetics. I've now visited for two different treatments, and I couldn't be happier with the consistency of their service. My first visit was for Botox, and I was naturally a bit nervous about looking 'frozen.' The team was incredible; they took their time to explain the process and focused on a conservative approach that smoothed out my fine lines while still allowing for natural movement. The results were flawless and lasted much longer than I expected. Because I was so impressed the first time, I recently went back for skin boosters. The difference in my skin's hydration and overall 'glow' is remarkable — my complexion looks much more refreshed and plump, which is exactly what I was looking for. What sets this clinic apart is its professional, clinical environment and the fact that it never pushes unnecessary treatments. They truly listen to your goals. I feel very safe in their hands and won't go anywhere else for my aesthetic needs.",
   },
   {
-    name: "Sample Review",
-    date: "Replace before go-live",
+    name: "Martins Smith",
+    date: "February 2026",
     quote:
-      "A genuinely premium experience — the clinic is immaculate and the results have been natural and confidence-boosting. I'd recommend Harley Street Aesthetics to anyone.",
-  },
-  {
-    name: "Sample Review",
-    date: "Replace before go-live",
-    quote:
-      "My consultation was thorough and completely no-pressure. They took the time to understand my goals and recommended exactly the right treatment plan for me.",
-  },
-  {
-    name: "Sample Review",
-    date: "Replace before go-live",
-    quote:
-      "Outstanding care and attention to detail. The whole process felt safe, medical and tailored to me. Delighted with how subtle and natural the results look.",
-  },
-  {
-    name: "Sample Review",
-    date: "Replace before go-live",
-    quote:
-      "Friendly, knowledgeable and reassuring from start to finish. They answered all of my questions and I never felt rushed. A first-class aesthetic clinic.",
-  },
-  {
-    name: "Sample Review",
-    date: "Replace before go-live",
-    quote:
-      "Wonderful, professional service tailored to my individual needs. I felt looked after at every step and would happily return.",
+      "From the moment I walked into Harley Street Aesthetics, I knew I was in expert hands. The clinic is pristine, the staff is incredibly welcoming, and the attention to detail unmatched. They took the time to listen to my concerns and delivered results that exceeded my expectations. If you're looking for natural, professional, and high-end aesthetic care, look no further.",
   },
 ];
 
@@ -71,7 +46,7 @@ export function Testimonials() {
         What our patients say
       </h3>
 
-      <div className="mt-5 grid gap-4 sm:grid-cols-3">
+      <div className="mx-auto mt-5 grid max-w-3xl gap-4 sm:grid-cols-2">
         {TESTIMONIALS.map((t, i) => (
           <motion.figure
             key={t.name}

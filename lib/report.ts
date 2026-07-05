@@ -110,7 +110,10 @@ async function renderAnnotatedFace(
         ctx.fillText(String(num), cx, cy + 0.5);
       }
     }
-    return { url: canvas.toDataURL("image/png"), aspect: W / H };
+    // JPEG (not PNG): the canvas is fully opaque (the selfie fills it before the
+    // markers are drawn), and jsPDF's JPEG path is reliable where its PNG/alpha
+    // path can silently fail — which left the face map invisible in the PDF.
+    return { url: canvas.toDataURL("image/jpeg", 0.92), aspect: W / H };
   } catch {
     return null;
   }
@@ -135,7 +138,7 @@ export async function generateReportPdf(opts: {
   let faceImageAspect: number | undefined;
   let areas: ReportArea[] = [];
 
-  if (result.usedPhoto && imageBase64 && landmarks) {
+  if (result.usedPhoto && imageBase64 && landmarks && !result.lowerFaceObscured) {
     const face = await renderAnnotatedFace(
       imageBase64,
       imageMediaType,

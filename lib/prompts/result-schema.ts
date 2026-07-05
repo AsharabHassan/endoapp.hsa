@@ -30,7 +30,7 @@ export const RESULT_SCHEMA = {
     lowerFaceObscured: {
       type: "boolean",
       description:
-        "True ONLY if a dense beard or heavy facial hair visibly hides the jawline, under-chin or neck so that skin cannot be reliably assessed from the photo. False for clean-shaven, light/patchy stubble, or any face where the lower-face skin is visible. A beard does NOT disqualify treatment — it only limits what the photo can show.",
+        "True ONLY if a full, dense beard completely hides the jawline, under-chin or neck so the skin cannot be seen at all in the photo. False for clean-shaven faces, stubble, short or close-cropped beards, patchy facial hair, and any beard through which the underlying skin is still visible — when in doubt, set it false. A beard does NOT disqualify treatment — it only limits what the photo can show.",
     },
     areaEnhancements: {
       type: "array",

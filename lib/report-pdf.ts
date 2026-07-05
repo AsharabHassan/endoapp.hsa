@@ -311,7 +311,7 @@ export function buildReportPdf(input: ReportInput): Blob {
     doc.setLineWidth(0.4);
     doc.roundedRect(ix - 1.5, y - 1.5, imgW + 3, imgH + 3, 2, 2, "S");
     try {
-      doc.addImage(input.faceImageDataUrl, "PNG", ix, y, imgW, imgH);
+      doc.addImage(input.faceImageDataUrl, "JPEG", ix, y, imgW, imgH);
     } catch {
       /* ignore */
     }

@@ -8,15 +8,12 @@ import { EASE } from "@/lib/motion";
 // ─────────────────────────────────────────────────────────────────────────────
 // Before/after gallery.
 //
-// PLACEHOLDER: this ships with NO patient images. Before go-live, drop Harley
-// Street Aesthetics' own consented Endomax Lift before/after pairs into
-// /public/results and populate the CASES array below — each photo cropped to the
-// treatment area only, with documented patient consent. Do not reuse imagery
-// from any other clinic.
-//
-// Both sliders share one frame size for a balanced grid; each photo is shown
-// fully (object-contain) inside that frame, letterboxed where its native ratio
-// differs from the frame.
+// Harley Street Aesthetics' own consented Endomax Lift before/after pairs, stored
+// in /public/results (downscaled + re-encoded from the clinic originals). Every
+// card uses ONE shared frame size (FRAME_RATIO) so the containers are identical;
+// each photo is centered inside it (object-contain) against the dark card, matted
+// where its native ratio differs. Only add further pairs with documented patient
+// consent; do not reuse imagery from any other clinic.
 // ─────────────────────────────────────────────────────────────────────────────
 const FRAME_RATIO = "4 / 3";
 
@@ -26,9 +23,18 @@ interface Case {
   after: string;
 }
 
-// Populate with HSA's own consented cases, e.g.
-// { area: "jawline and neck", before: "/results/neck-before.jpg", after: "/results/neck-after.jpg" }
-const CASES: Case[] = [];
+const CASES: Case[] = [
+  {
+    area: "jawline and neck",
+    before: "/results/jawline-neck-before.jpg",
+    after: "/results/jawline-neck-after.jpg",
+  },
+  {
+    area: "under-eye",
+    before: "/results/undereye-before.jpg",
+    after: "/results/undereye-after.jpg",
+  },
+];
 
 export function ResultsGallery() {
   return (

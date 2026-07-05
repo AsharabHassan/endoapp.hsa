@@ -1,0 +1,15 @@
+# Netlify configuration for the Endomax Lift Suitability Analyzer (Next.js 16, App Router).
+# The Next.js runtime plugin turns the App Router pages + Node API routes
+# (/api/analyze, /api/lead, /api/report) into Netlify Functions automatically.
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Next.js 16 requires Node >= 20.9. Pin to the current LTS.
+  NODE_VERSION = "22"
+
+# Auto-installed from the Netlify plugin registry — no need to add it to package.json.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

@@ -1,0 +1,69 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e7]: HSA
+          - generic [ref=e8]:
+            - generic [ref=e9]: Harley Street
+            - generic [ref=e10]: Aesthetics
+        - generic [ref=e11]: AI Analysis · Harley Street
+    - main [ref=e15]:
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - img [ref=e19]
+          - text: AI Endomax Lift suitability
+        - heading "Is the Endomax Lift right for you?" [level=1] [ref=e22]:
+          - generic [ref=e24]: Is the Endomax Lift
+          - generic [ref=e26]: right for you?
+        - paragraph [ref=e27]: Take a photo and our AI reads your lower face in seconds — a doctor-led guide to advanced non-surgical skin tightening at Harley Street Aesthetics. No pressure, just clarity.
+        - generic [ref=e28]:
+          - button "Begin your analysis" [ref=e29]:
+            - text: Begin your analysis
+            - img [ref=e30]
+          - generic [ref=e32]:
+            - generic [ref=e33]: 60 seconds
+            - generic [ref=e35]: Private
+            - generic [ref=e37]: Doctor-led
+    - contentinfo [ref=e38]:
+      - generic [ref=e39]:
+        - generic [ref=e40]:
+          - generic [ref=e41]:
+            - generic [ref=e42]: HSA
+            - generic [ref=e43]:
+              - generic [ref=e44]: Harley Street
+              - generic [ref=e45]: Aesthetics
+              - generic [ref=e46]: London · Glasgow
+          - paragraph [ref=e47]: London & Glasgow's premier destination for advanced aesthetic medicine.
+        - generic [ref=e48]:
+          - paragraph [ref=e49]: Our clinics
+          - generic [ref=e50]:
+            - paragraph [ref=e51]: London
+            - paragraph [ref=e52]: 10 Harley Street
+            - paragraph [ref=e53]: London W1G 9PF
+          - generic [ref=e54]:
+            - paragraph [ref=e55]: Glasgow
+            - paragraph [ref=e56]: 5th Floor, Ingram House
+            - paragraph [ref=e57]: 227 Ingram Street, Glasgow G1 1DA
+        - generic [ref=e58]:
+          - paragraph [ref=e59]: Get in touch
+          - link "020 4628 3165" [ref=e60] [cursor=pointer]:
+            - /url: tel:+442046283165
+            - img [ref=e61]
+            - text: 020 4628 3165
+          - link "WhatsApp 07700 106236" [ref=e63] [cursor=pointer]:
+            - /url: https://wa.me/447700106236
+            - img [ref=e64]
+            - text: WhatsApp 07700 106236
+          - link "hello@harleystreetaesthetic.co.uk" [ref=e66] [cursor=pointer]:
+            - /url: mailto:hello@harleystreetaesthetic.co.uk
+            - img [ref=e67]
+            - text: hello@harleystreetaesthetic.co.uk
+          - paragraph [ref=e70]:
+            - img [ref=e71]
+            - text: Mon–Sat · by appointment
+      - generic [ref=e74]:
+        - paragraph [ref=e75]: This tool offers general information to help you prepare for a consultation. It is not a medical assessment or diagnosis. Suitability for the Endomax Lift is confirmed in person by a qualified practitioner.
+        - paragraph [ref=e76]: © Harley Street Aesthetics · London · Glasgow
+  - button "Open Next.js Dev Tools" [ref=e82] [cursor=pointer]:
+    - img [ref=e83]

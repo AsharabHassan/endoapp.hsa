@@ -1,0 +1,28 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: HSA
+        - generic [ref=e8]:
+          - generic [ref=e9]: Harley Street
+          - generic [ref=e10]: Aesthetics
+    - main [ref=e15]:
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - img [ref=e19]
+          - text: AI Endomax Lift suitability
+        - heading "Is the Endomax Lift right for you?" [level=1] [ref=e22]:
+          - generic [ref=e24]: Is the Endomax Lift
+          - generic [ref=e26]: right for you?
+        - paragraph [ref=e27]: Take a photo and our AI reads your lower face in seconds — a doctor-led guide to advanced non-surgical skin tightening at Harley Street Aesthetics. No pressure, just clarity.
+        - generic [ref=e28]:
+          - button "Begin your analysis" [active] [ref=e29]:
+            - text: Begin your analysis
+            - img [ref=e30]
+          - generic [ref=e32]:
+            - generic [ref=e33]: 60 seconds
+            - generic [ref=e35]: Private
+            - generic [ref=e37]: Doctor-led
+  - button "Open Next.js Dev Tools" [ref=e82] [cursor=pointer]:
+    - img [ref=e83]
+  - alert [ref=e93]

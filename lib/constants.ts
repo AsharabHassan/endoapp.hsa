@@ -144,5 +144,31 @@ export const PRICE_GUIDE = {
   note: "Indicative — your exact plan is confirmed at consultation. 0% finance available.",
 } as const;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Retargeting offer page (/offer): promotional pricing, booking, social proof
+// and 0% finance illustration.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const OFFER = {
+  /** Promotional "from" price in GBP (numeric, used by the finance calculator). */
+  price: 1450,
+  /** Usual "from" price shown struck through next to the offer. */
+  usualPrice: 2000,
+  /**
+   * GoHighLevel booking-calendar widget URL to embed on the offer page.
+   * PLACEHOLDER: HSA has no calendar widget configured yet — while this is
+   * empty the page shows a booking panel (phone / WhatsApp / booking site)
+   * instead of an embedded calendar. Set NEXT_PUBLIC_OFFER_CALENDAR_URL to a
+   * GHL widget URL (links.…/widget/bookings/…) to enable the in-page calendar.
+   */
+  calendarUrl: process.env.NEXT_PUBLIC_OFFER_CALENDAR_URL ?? "",
+  /**
+   * Instagram reel with an HSA patient's Endomax Lift testimonial.
+   * PLACEHOLDER: empty until HSA provides their own reel — the video card is
+   * hidden while unset. Do not reuse another clinic's patient content.
+   */
+  instagramReelUrl: "" as string,
+} as const;
+
 export const DISCLAIMER =
   "This tool offers general information to help you prepare for a consultation. It is not a medical assessment or diagnosis. Suitability for the Endomax Lift is confirmed in person by a qualified practitioner.";

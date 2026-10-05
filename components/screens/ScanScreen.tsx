@@ -94,15 +94,16 @@ export function ScanScreen() {
   }, [result, minElapsed, completeScan, goToStep]);
 
   return (
-    <div className="mx-auto flex w-full max-w-md flex-col items-center px-6 py-10">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-peach-deep">
-        Analysing
+    <div className="mx-auto flex w-full max-w-4xl flex-col items-center px-6 py-12 text-center">
+      <p className="text-[11px] font-bold uppercase tracking-[.22em] text-[#9a773e]">
+        02 / Preparing your guide
       </p>
-      <h2 className="mt-3 text-center font-serif text-[28px] leading-tight text-heading sm:text-[34px]">
-        Reading your features
+      <h2 className="mt-4 text-center font-serif text-[clamp(2.4rem,5vw,4rem)] leading-tight !text-[#302719]">
+        A closer look at your photo
       </h2>
+      <p className="mt-3 max-w-lg text-sm leading-relaxed text-[#665846]">We are reviewing the areas visible in your selfie and preparing a guide for your consultation.</p>
 
-      <div className="relative mt-8 aspect-[4/5] w-full max-w-xs overflow-hidden rounded-[2rem] border border-peach/20 bg-white/[0.04] shadow-soft">
+      <motion.div initial={reduce ? false : { opacity: 0, scale: .98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .6 }} className="relative mt-8 aspect-[4/5] w-full max-w-xs overflow-hidden rounded-[2rem] border-4 border-[#e8d7b8] bg-[#eadcc4] shadow-[0_30px_65px_-35px_rgba(79,51,13,.65)]">
         {dataUrl && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -137,9 +138,10 @@ export function ScanScreen() {
         )}
         {/* corner reticle */}
         <Reticle />
-      </div>
+      </motion.div>
 
-      <div className="mt-8 h-6 text-center">
+      <div aria-hidden="true" className="mt-7 h-[2px] w-32 overflow-hidden rounded-full bg-[#c9ad79]/30"><div className={`h-full w-1/3 rounded-full bg-[#a47e3c] ${reduce ? "mx-auto" : "scan-indicator"}`} /></div>
+      <div role="status" aria-live="polite" className="mt-5 min-h-6 text-center">
         <AnimatePresence mode="wait">
           <motion.p
             key={statusIndex}
@@ -147,7 +149,7 @@ export function ScanScreen() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.4 }}
-            className="text-sm font-medium tracking-wide text-heading"
+            className="text-sm font-medium tracking-wide text-[#4b3922]"
           >
             {STATUS[statusIndex]}
             <span className="text-peach-deep">…</span>
@@ -155,8 +157,8 @@ export function ScanScreen() {
         </AnimatePresence>
       </div>
 
-      <p className="mt-2 text-xs text-body/55">
-        On-device · your photo never leaves this step
+      <p className="mt-2 max-w-sm text-xs leading-relaxed text-[#7b6b54]">
+        Your photo is analysed to prepare your report. It may be included in the copy emailed to you and retained by the clinic for your consultation.
       </p>
     </div>
   );

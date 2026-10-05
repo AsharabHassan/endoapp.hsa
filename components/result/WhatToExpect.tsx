@@ -8,17 +8,17 @@ const POINTS = [
   {
     icon: Zap,
     title: "Minimally invasive",
-    body: "A fine laser fibre works beneath the skin — no incisions, only local numbing.",
+    body: "A fine laser fibre is introduced beneath the skin through a small entry point. Your clinician will explain the procedure and anaesthetic.",
   },
   {
     icon: Hourglass,
     title: "Little downtime",
-    body: "Most people are back to normal within days; mild redness or swelling settles quickly.",
+    body: "Recovery varies. Temporary redness or swelling can occur, and your clinician will explain what to expect for your plan.",
   },
   {
     icon: Leaf,
     title: "Builds over months",
-    body: "Some lift is immediate, with collagen renewal continuing over roughly 3–6 months.",
+    body: "Changes may develop over time as the skin responds. The degree and timing of any result vary between people.",
   },
 ];
 

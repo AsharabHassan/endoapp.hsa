@@ -6,11 +6,11 @@ import type { Step } from "@/store/wizard-store";
 const ORDER: Step[] = ["consent", "scan", "lead", "result"];
 
 export function ProgressRail({ step }: { step: Step }) {
-  const activeIndex = ORDER.indexOf(step);
+  const activeIndex = ORDER.indexOf(step === "retake" ? "consent" : step);
   if (activeIndex < 0) return null;
 
   return (
-    <div className="flex items-center gap-2" aria-hidden>
+    <div className="flex items-center gap-2" role="img" aria-label={`Step ${activeIndex + 1} of ${ORDER.length}`}>
       {ORDER.map((s, i) => {
         const filled = i <= activeIndex;
         return (

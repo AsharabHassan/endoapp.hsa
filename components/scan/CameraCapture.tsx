@@ -37,7 +37,7 @@ export function CameraCapture({ onCapture, onError }: CameraCaptureProps) {
         }
       } catch {
         onError(
-          "We couldn't access your camera. You can upload a photo instead, or just answer the questions.",
+          "We couldn't access your camera. Please upload a photo instead.",
         );
       }
     }
@@ -68,7 +68,7 @@ export function CameraCapture({ onCapture, onError }: CameraCaptureProps) {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative aspect-[4/5] w-full max-w-xs overflow-hidden rounded-[2rem] border border-peach/20 bg-white/[0.04] shadow-soft">
+      <div className="relative aspect-[4/5] w-full max-w-xs overflow-hidden rounded-[2rem] border-4 border-[#dfcaa4] bg-[#eadcc4] shadow-[0_30px_65px_-35px_rgba(79,51,13,.65)]">
         <video
           ref={videoRef}
           playsInline
@@ -92,7 +92,7 @@ export function CameraCapture({ onCapture, onError }: CameraCaptureProps) {
           <Camera size={18} /> Capture photo
         </Button>
       </motion.div>
-      <p className="mt-3 text-xs text-body/60">
+      <p className="mt-3 text-xs text-[#75654e]">
         Face the light, look straight at the camera.
       </p>
     </div>

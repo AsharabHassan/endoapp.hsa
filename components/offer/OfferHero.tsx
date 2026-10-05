@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "motion/react";
 import { CalendarHeart, ScanFace, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,13 +16,15 @@ const gbp = new Intl.NumberFormat("en-GB", {
 });
 
 /**
- * Retargeting hero: leads with the promotional price (offer vs usual), then
+ * Retargeting hero: leads with the package starting price, then
  * drives to the on-page booking section (#book) with the AI scan as the
  * secondary path for visitors who want to re-check suitability first.
  */
 export function OfferHero() {
   return (
-    <section className="relative px-6 pb-14 pt-16 text-center sm:pt-20">
+    <section className="relative isolate overflow-hidden px-6 pb-16 pt-16 text-center sm:pt-20">
+      <Image src="/visuals/champagne-silk.png" alt="" fill sizes="100vw" className="-z-20 object-cover object-[70%_center] opacity-35" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#f8f2e7]/80 via-[#f8f2e7]/83 to-[#f8f2e7]" />
       <div className="mx-auto max-w-3xl">
         <motion.p
           initial={{ opacity: 0, y: 14 }}
@@ -29,7 +32,7 @@ export function OfferHero() {
           transition={{ duration: 0.5, ease: EASE }}
           className="inline-flex items-center gap-2 rounded-full border border-peach/40 bg-peach/10 px-4 py-1.5 text-[12px] font-semibold uppercase tracking-[0.18em] text-peach"
         >
-          <Sparkles size={13} /> Limited-time Endomax Lift offer
+          <Sparkles size={13} /> Doctor-led Endomax Lift
         </motion.p>
 
         <motion.h1
@@ -38,7 +41,7 @@ export function OfferHero() {
           transition={{ delay: 0.08, duration: 0.6, ease: EASE }}
           className="mt-5 text-4xl leading-tight sm:text-5xl"
         >
-          Endomax Lift from{" "}
+          Endomax Lift packages from{" "}
           <span className="text-gold-gradient">{gbp.format(OFFER.price)}</span>
         </motion.h1>
 
@@ -48,12 +51,8 @@ export function OfferHero() {
           transition={{ delay: 0.16, duration: 0.6, ease: EASE }}
           className="mt-3 text-lg text-body"
         >
-          Usually from{" "}
-          <span className="text-body/70 line-through decoration-peach/60 decoration-2">
-            {gbp.format(OFFER.usualPrice)}
-          </span>{" "}
-          — one discreet laser treatment, no scalpel, results that keep
-          improving for months.
+          A tailored plan for the areas that matter to you, with treatment
+          suitability and the final quote confirmed by the clinical team.
         </motion.p>
 
         <motion.p
@@ -64,7 +63,7 @@ export function OfferHero() {
         >
           You recently checked your Endomax Lift suitability with{" "}
           {CLINIC.name}. Your free consultation is the next step — book below
-          and our medical team will confirm your personal plan and exact price.
+          and Dr Ayda will discuss your guide, goals and next steps online.
         </motion.p>
 
         <motion.div

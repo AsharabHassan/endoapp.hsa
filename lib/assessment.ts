@@ -32,6 +32,19 @@ export function buildResult(
   assessment: PhotoAssessment,
   usedPhoto: boolean,
 ): AnalyzeResult {
+  // Continuing without a retake must never surface unsupported photo findings.
+  if (!assessment.framingAdequate) {
+    return {
+      ...genericFallbackResult(usedPhoto),
+      framingAdequate: false,
+      narrative: {
+        headline: "Your next step is a conversation",
+        narrative: "Your photo was received, but there isn't enough visible detail for a personalised photo guide. You can still discuss your goals and options with Dr Ayda without uploading another photo.",
+        observedAreas: [],
+        encouragement: "Book a free 15-minute online consultation. Dr Ayda can explain the next steps; a qualified practitioner confirms treatment suitability and safety.",
+      },
+    };
+  }
   return {
     bucket: assessment.suitability,
     score: scoreInBucket(assessment.suitability, assessment.score),
@@ -44,6 +57,10 @@ export function buildResult(
     lowerFaceObscured: assessment.lowerFaceObscured,
     areaEnhancements: assessment.areaEnhancements,
     framingAdequate: assessment.framingAdequate,
+    focusFindings: assessment.focusFindings ?? [],
+    areaObservations: assessment.areaObservations ?? [],
+    jowlGrade: assessment.jowlGrade ?? "unclear",
+    neckType: assessment.neckType ?? "unclear",
   };
 }
 
@@ -56,12 +73,12 @@ export function genericFallbackResult(usedPhoto: boolean): AnalyzeResult {
     softFlagged: false,
     routedReason: "",
     narrative: {
-      headline: "Let's confirm your fit in person",
+      headline: "Let's discuss your options with Dr Ayda",
       narrative:
-        "We couldn't fully read your photo this time, but that's no problem at all. The surest way to know whether the Endomax Lift is right for you is a quick look in person with our Harley Street team.",
+        "We couldn't complete the photo analysis this time. You can still discuss your goals with Dr Ayda in a free 15-minute online consultation, with a phone call available if needed. You don't need to upload another photo to book.",
       observedAreas: [],
       encouragement:
-        "Book your free, no-pressure consultation in London or Glasgow whenever you're ready — we'll talk you through everything.",
+        "Book your free online consultation whenever you're ready. A qualified practitioner confirms treatment suitability and safety.",
     },
     narrativeSource: "fallback",
     usedPhoto,
@@ -69,5 +86,6 @@ export function genericFallbackResult(usedPhoto: boolean): AnalyzeResult {
     areaEnhancements: {},
     // An analysis failure isn't a framing problem — don't push a retake here.
     framingAdequate: true,
+    focusFindings: [],
   };
 }

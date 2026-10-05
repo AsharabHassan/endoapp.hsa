@@ -8,53 +8,43 @@ import { EASE } from "@/lib/motion";
 
 /**
  * Shown when the photo didn't clearly capture the lower face / neck — the areas
- * the Endomax Lift treats. We ask for a camera retake rather than presenting a
- * read we can't stand behind. A subtle escape hatch lets the determined user
- * continue to a (gently-worded) result anyway.
+ * the Endomax Lift treats. A better photo is optional; continuing opens a
+ * general consultation guide without unsupported personalised findings.
  */
 export function RetakeScreen() {
   const retakePhoto = useWizard((s) => s.retakePhoto);
   const goToStep = useWizard((s) => s.goToStep);
 
   return (
-    <section className="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-md flex-col items-center justify-center px-6 py-16 text-center">
+    <section className="mx-auto flex min-h-[calc(100dvh-5rem)] w-full max-w-lg flex-col items-center justify-center px-6 py-16 text-center">
       <motion.div
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, ease: EASE }}
         className="flex flex-col items-center"
       >
-        <span className="grid h-16 w-16 place-items-center rounded-full border border-peach/30 bg-peach/10 text-peach shadow-[0_0_40px_-12px_rgba(212,175,55,0.6)]">
+        <span className="grid h-16 w-16 place-items-center rounded-full border border-[#c9ae7c] bg-[#fff9ee] text-[#9a773e] shadow-[0_15px_35px_-22px_rgba(90,60,18,.5)]">
           <ScanFace size={28} />
         </span>
-        <span className="mt-6 inline-flex items-center gap-2 rounded-full border border-peach/30 bg-peach/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-peach">
-          Let&rsquo;s try once more
+        <span className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#c9ae7c] bg-[#fff9ee] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#9a773e]">
+          Your photo is received
         </span>
-        <h2 className="mt-4 font-serif text-[30px] leading-tight text-heading">
-          A clearer photo, please
+        <h2 className="mt-4 font-serif text-[clamp(2.4rem,5vw,3.5rem)] leading-tight !text-[#302719]">
+          Continue, or try another photo
         </h2>
-        <p className="mt-3 text-[15px] leading-relaxed text-body">
-          We couldn&rsquo;t clearly see your{" "}
-          <span className="font-medium text-heading">
-            jawline, under-chin and neck
-          </span>{" "}
-          — the areas the Endomax Lift works on. For an accurate read, retake
-          your photo with the{" "}
-          <span className="font-medium text-heading">camera</span>, holding it a
-          little further back with your chin level so your whole lower face and
-          neck are in frame.
+        <p className="mt-3 text-[15px] leading-relaxed text-[#625648]">
+          There isn&rsquo;t enough visible detail for a personalised photo guide.
+          You can continue to a general guide and book your free online consultation
+          with Dr Ayda. Another photo is optional.
         </p>
 
-        <Button size="lg" onClick={retakePhoto} className="mt-8 w-full">
-          <Camera size={18} /> Retake with the camera
+        <Button size="lg" onClick={() => goToStep("lead")} className="mt-8 w-full">
+          Continue without retaking
         </Button>
-        <button
-          type="button"
-          onClick={() => goToStep("lead")}
-          className="mt-4 text-[13px] font-medium text-body/55 underline-offset-4 transition hover:text-peach"
-        >
-          See my result anyway
-        </button>
+        <Button variant="outline" size="lg" onClick={retakePhoto} className="mt-3 w-full">
+          <Camera size={18} /> Try another photo
+        </Button>
+        <p className="mt-5 text-xs leading-relaxed text-[#776345]">For more detail, face the camera in even light, with your chin level and your jawline and neck in frame.</p>
       </motion.div>
     </section>
   );

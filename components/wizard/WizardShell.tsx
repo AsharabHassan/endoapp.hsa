@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, MotionConfig } from "motion/react";
 import { useWizard } from "@/store/wizard-store";
 import { AmbientBackground } from "@/components/ui/AmbientBackground";
 import { Logo } from "@/components/brand/Logo";
@@ -29,12 +29,13 @@ export function WizardShell() {
   const showFooter = step === "hero" || step === "result";
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <AmbientBackground />
+    <MotionConfig reducedMotion="user">
+    <div className="journey-light relative isolate flex min-h-dvh flex-col">
+      <AmbientBackground tone="warm" />
       <CinematicHeader hero={step === "hero"} step={step} />
 
       <main className="flex flex-1 items-center justify-center">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo({ top: 0, behavior: "instant" })}>
           <StepTransition key={step}>
             <Screen />
           </StepTransition>
@@ -43,6 +44,7 @@ export function WizardShell() {
 
       {showFooter && <ClinicFooter />}
     </div>
+    </MotionConfig>
   );
 }
 
@@ -62,22 +64,21 @@ function CinematicHeader({
     >
       {/* animated top hairline */}
       <motion.div
-        className="h-px origin-left bg-gradient-to-r from-transparent via-peach-deep/60 to-transparent"
+        className="h-px origin-left bg-gradient-to-r from-transparent via-[#aa854c] to-transparent"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
       />
-      <div className="border-b border-white/10 bg-cream/55 backdrop-blur-xl max-md:bg-cream/85 max-md:backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 sm:px-8">
+      <div className="border-b border-[#dbc9a8] bg-[#f6efe3]/90 shadow-[0_8px_30px_-22px_rgba(76,52,19,.4)] backdrop-blur-xl">
+        <div className="mx-auto flex h-[72px] max-w-6xl items-center justify-between px-5 sm:h-20 sm:px-8">
           <Logo />
 
           {hero ? (
-            <div className="hidden items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-heading/60 sm:flex">
+            <div className="hidden items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#7a674b] sm:flex">
               <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-peach-deep/60" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-peach-deep" />
               </span>
-              AI Analysis · Harley Street
+              Endomax Lift · Personal guide
             </div>
           ) : (
             <ProgressRail step={step} />

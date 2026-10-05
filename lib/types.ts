@@ -1,3 +1,4 @@
+import type { JowlGrade, NeckType } from "./lower-face-profile";
 // ─────────────────────────────────────────────────────────────────────────────
 // Domain model for the Endomax Lift Suitability Analyzer.
 // The scoring engine (lib/scoring.ts) is authoritative over `Bucket`; Claude only
@@ -6,6 +7,24 @@
 
 /** The four suitability outcomes. Never a flat "you don't qualify". */
 export type Bucket = "great" | "good" | "consultation" | "alternative";
+
+/** Limited, photo-observable findings used for the personalised area explanation. */
+export type FocusFinding =
+  | "jawline_softening"
+  | "under_chin_fullness"
+  | "neck_softening"
+  | "jowl_fullness"
+  | "neck_folds"
+  | "neck_crepiness"
+  | "neck_horizontal_lines"
+  | "neck_vertical_bands"
+  | "mid_face_softening";
+
+export interface AreaObservation {
+  finding: FocusFinding;
+  /** A short description of visible shape or texture, without inferring tissue health. */
+  observation: string;
+}
 
 /** Areas of concern a respondent can select. */
 export type AreaId =
@@ -84,6 +103,12 @@ export interface AnalyzeResult extends ScoreResult {
   areaEnhancements: Record<string, number>;
   /** False when the photo doesn't clearly show the lower face/neck — prompt a retake. */
   framingAdequate: boolean;
+  /** Up to three visible, treatment-relevant observations; empty if unreadable. */
+  focusFindings?: FocusFinding[];
+  areaObservations?: AreaObservation[];
+  /** Lower-face profile: the visual jowl grade and neck type (see lib/lower-face-profile.ts). */
+  jowlGrade?: JowlGrade;
+  neckType?: NeckType;
 }
 
 /** Lead captured at the gate. */
@@ -117,10 +142,16 @@ export interface PhotoAssessment {
   areaEnhancements: Record<string, number>;
   /** False when the photo doesn't clearly show the lower face/neck — prompt a retake. */
   framingAdequate: boolean;
+  focusFindings?: FocusFinding[];
+  areaObservations?: AreaObservation[];
+  /** Lower-face profile: the visual jowl grade and neck type (see lib/lower-face-profile.ts). */
+  jowlGrade?: JowlGrade;
+  neckType?: NeckType;
 }
 
 /** Request body for POST /api/lead. */
 export interface LeadRequest {
   lead: Lead;
   result: AnalyzeResult;
+  metaEventId?: string;
 }

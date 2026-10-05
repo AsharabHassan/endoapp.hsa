@@ -43,6 +43,16 @@ export const CLINIC = {
   ] satisfies ClinicLocation[],
 } as const;
 
+/** Profile facts and portrait are from the clinic's London team page. */
+export const CONSULTANT = {
+  name: "Dr Ayda Soltanzadeh",
+  role: "Consultant Dermatologist",
+  profile:
+    "Dr Ayda brings a clinical dermatology background and a considered approach to facial aesthetics. Your free online consultation is the place to discuss your photo guide, goals and next steps.",
+  image: "/images/dr-ayda-soltanzadeh.webp",
+  profileUrl: "https://harleystreetaesthetic.co.uk/london/team",
+} as const;
+
 export const TRUST_MARKERS = [
   "10 Harley Street, London",
   "Doctor-led & medically supervised",
@@ -138,22 +148,19 @@ export const ENDOLIFT_AREAS = [
   "Mid-face & cheeks",
 ] as const;
 
-/** Indicative UK pricing guidance (clinic-stated ranges; 0% finance available). */
+/** Clinic-specified Endomax Lift package starting price. */
 export const PRICE_GUIDE = {
-  from: "£1,450",
-  note: "Indicative — your exact plan is confirmed at consultation. 0% finance available.",
+  from: "£2,000",
+  note: "Package price starts here. Your treatment plan and final quote are confirmed after consultation. 0% finance options are available, subject to terms.",
 } as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Retargeting offer page (/offer): promotional pricing, booking, social proof
-// and 0% finance illustration.
+// Offer page (/offer): package pricing, booking, social proof and payment planning.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const OFFER = {
-  /** Promotional "from" price in GBP (numeric, used by the finance calculator). */
-  price: 1450,
-  /** Usual "from" price shown struck through next to the offer. */
-  usualPrice: 2000,
+  /** Package starting price in GBP (numeric, used by the calculator). */
+  price: 2000,
   /**
    * GoHighLevel booking-calendar widget URL to embed on the offer page.
    * PLACEHOLDER: HSA has no calendar widget configured yet — while this is

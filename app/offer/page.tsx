@@ -22,9 +22,9 @@ import { CLINIC, OFFER } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title:
-    "Endomax Lift from £1,450 · Book your free consultation · Harley Street Aesthetics",
+    "Endomax Lift packages from £2,000 · Free online consultation · Harley Street Aesthetics",
   description:
-    "Limited-time Endomax Lift offer at Harley Street Aesthetics, London & Glasgow — from £1,450 (usually from £2,000). Doctor-led, 0% finance. Book your free consultation.",
+    "Endomax Lift packages from £2,000 at Harley Street Aesthetics. Explore payment options and book a free online consultation with Dr Ayda.",
   // Ad retargeting landing page — keep it out of search results.
   robots: { index: false, follow: false },
 };
@@ -56,11 +56,11 @@ const TRUST_CARDS = [
 
 export default function OfferPage() {
   return (
-    <div className="flex min-h-dvh flex-col">
-      <AmbientBackground />
+    <div className="journey-light flex min-h-dvh flex-col">
+      <AmbientBackground tone="warm" />
 
       {/* Sticky header: brand + the one action that matters */}
-      <header className="sticky top-0 z-40 border-b border-peach/15 bg-cream/85 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-[#d8c7a8] bg-[#f6efe3]/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
           <Logo />
           <a href="#book">
@@ -86,7 +86,7 @@ export default function OfferPage() {
               {TRUST_CARDS.map(({ icon: Icon, title, copy }) => (
                 <div
                   key={title}
-                  className="flex gap-4 rounded-2xl border border-peach/20 bg-white/[0.04] p-5 shadow-soft"
+                  className="flex gap-4 rounded-2xl border border-[#d8c7a8] bg-[#fffaf1] p-5 shadow-[0_20px_40px_-30px_rgba(87,57,15,.45)]"
                 >
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-peach/15 text-peach">
                     <Icon size={20} strokeWidth={2} />
@@ -106,14 +106,14 @@ export default function OfferPage() {
         </section>
 
         {/* Before / after */}
-        <section className="px-6 py-12">
+        <section className="report-dark bg-[#3a3026] px-6 py-12">
           <div className="mx-auto max-w-4xl">
             <ResultsGallery />
           </div>
         </section>
 
         {/* Social proof: video testimonial (when configured) + written reviews */}
-        <section className="bg-grain px-6 py-14">
+        <section className="report-dark bg-[#3a3026] px-6 py-14">
           <div className="mx-auto max-w-5xl">
             <h2 className="text-center font-serif text-2xl text-heading">
               Hear it from our patients
@@ -136,26 +136,19 @@ export default function OfferPage() {
           <div className="mx-auto grid max-w-5xl items-center gap-8 lg:grid-cols-2">
             <div>
               <p className="inline-flex rounded-full border border-peach/40 bg-peach/10 px-4 py-1.5 text-[12px] font-semibold uppercase tracking-[0.18em] text-peach">
-                Limited-time offer
+                Treatment and payment options
               </p>
               <h2 className="mt-4 font-serif text-3xl leading-snug text-heading">
-                Endomax Lift from £1,450
-                <span className="block text-xl text-body/70">
-                  usually from{" "}
-                  <span className="line-through decoration-peach/60 decoration-2">
-                    £2,000
-                  </span>
-                </span>
+                Endomax Lift packages from £2,000
               </h2>
               <p className="mt-4 max-w-md text-sm leading-relaxed text-body">
-                One session, walk-in walk-out, minimal downtime — and with 0%
-                finance you can spread the cost into comfortable interest-free
-                monthly payments. Your exact price is confirmed at your free
-                consultation.
+                Explore monthly payments with the calculator. Dr Ayda will
+                discuss your goals in a free online consultation; the clinic
+                will confirm the treatment plan and final quote afterward.
               </p>
               <a href="#book" className="mt-6 inline-block">
                 <Button size="lg">
-                  <CalendarHeart size={18} /> Claim your consultation
+                  <CalendarHeart size={18} /> Book your online consultation
                 </Button>
               </a>
             </div>
@@ -167,12 +160,12 @@ export default function OfferPage() {
         <section id="book" className="scroll-mt-20 px-6 py-14">
           <div className="mx-auto max-w-3xl">
             <h2 className="text-center font-serif text-2xl text-heading">
-              Book your free consultation
+              Book your free online consultation
             </h2>
             <p className="mx-auto mt-2 max-w-lg text-center text-sm text-body/80">
-              A relaxed, no-pressure chat at our London or Glasgow clinic — our
-              medical team will confirm your suitability, answer your questions
-              and lock in your offer price.
+              A free 15-minute online conversation with Dr Ayda about your
+              guide and goals. The clinic will confirm the next step and your
+              treatment quote after the consultation.
             </p>
             <div className="mt-7">
               <BookingCalendar />
@@ -182,7 +175,7 @@ export default function OfferPage() {
 
         {/* Secondary path: retake the AI scan */}
         <section className="px-6 pb-16">
-          <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 rounded-2xl border border-peach/20 bg-white/[0.03] px-6 py-8 text-center">
+          <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 rounded-2xl border border-[#d8c7a8] bg-[#fffaf1] px-6 py-8 text-center">
             <ScanFace size={26} className="text-peach" />
             <h2 className="font-serif text-xl text-heading">
               Not sure the Endomax Lift is right for you?
@@ -205,3 +198,4 @@ export default function OfferPage() {
     </div>
   );
 }
+

@@ -301,21 +301,21 @@ export const REGION_COPY: Record<RegionKey, { title: string; blurb: string }> = 
   cheeks: {
     title: "Your mid-face & cheeks",
     blurb:
-      "Subtle lift and firmness through the mid-face, gently re-supporting softening or sagging cheeks for a naturally elevated contour.",
+      "A softer cheek contour may be worth discussing. Dr Ayda can assess whether Endomax Lift or another approach is more appropriate.",
   },
   jawline: {
     title: "Your jawline & jowls",
     blurb:
-      "The Endomax Lift tightens along the jawline to soften early jowls and restore a cleaner, more defined contour.",
+      "This visible contour change is worth discussing. Endomax Lift may help some mild to moderate jawline softening; Dr Ayda will assess whether it fits your goals.",
   },
   chin: {
     title: "Your under-chin",
     blurb:
-      "It firms the skin beneath the chin, easing a soft or fuller under-chin as collagen rebuilds over 3–6 months.",
+      "A softer under-chin outline can have several causes. Dr Ayda can assess whether Endomax Lift is an appropriate option for this area.",
   },
   neck: {
     title: "Your neck",
     blurb:
-      "Collagen stimulation in the neck helps smooth and tighten crepey or loosening skin.",
+      "Endomax Lift may be considered for some neck skin softening. A clinician needs to assess the skin and likely benefit in person.",
   },
 };

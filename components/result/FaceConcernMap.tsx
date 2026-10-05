@@ -7,7 +7,6 @@ import { useWizard } from "@/store/wizard-store";
 import {
   regionMarkers,
   regionRect,
-  toRegionKey,
   faceVisibleSide,
   REGION_COPY,
   REGION_LABEL,
@@ -19,10 +18,7 @@ import { cropImage } from "@/lib/crop";
 import { useLightFx } from "@/lib/use-light-fx";
 import { EASE } from "@/lib/motion";
 import { cn } from "@/lib/utils";
-
-// The core areas the Endomax Lift addresses — always shown when the face is
-// readable. Neck is added only if Claude flagged it, so the map stays focused.
-const CORE: RegionKey[] = ["undereye", "cheeks", "jawline", "chin"];
+import { focusRegionKeys } from "@/lib/focus-findings";
 
 // Lower-face areas a beard hides — when the read is beard-obscured these can't be
 // honestly assessed from the photo, so the map says so instead of claiming a read.
@@ -47,9 +43,8 @@ export function FaceConcernMap() {
   const imageBase64 = useWizard((s) => s.imageBase64);
   const imageMediaType = useWizard((s) => s.imageMediaType);
   const landmarks = useWizard((s) => s.landmarks);
-  const observedAreas = useWizard((s) => s.result?.narrative.observedAreas);
   const lowerFaceObscured = useWizard((s) => s.result?.lowerFaceObscured);
-  const areaEnhancements = useWizard((s) => s.result?.areaEnhancements);
+  const result = useWizard((s) => s.result);
   const light = useLightFx();
 
   const isCovered = (r: RegionKey) =>
@@ -63,26 +58,13 @@ export function FaceConcernMap() {
     ? `data:${imageMediaType};base64,${imageBase64}`
     : null;
 
-  const flaggedSet = useMemo(
-    () =>
-      new Set(
-        (observedAreas ?? [])
-          .map(toRegionKey)
-          .filter((r): r is RegionKey => r !== null),
-      ),
-    [observedAreas],
-  );
-
   const regions = useMemo(() => {
-    if (!landmarks) return [] as RegionKey[];
-    const wanted = [
-      ...CORE,
-      ...(flaggedSet.has("neck") ? ["neck" as const] : []),
-    ];
+    if (!landmarks || !result) return [] as RegionKey[];
+    const wanted = focusRegionKeys(result);
     return REGION_ORDER.filter(
       (r) => wanted.includes(r) && regionMarkers(r, landmarks).length > 0,
     );
-  }, [landmarks, flaggedSet]);
+  }, [landmarks, result]);
 
   const [mapped, setMapped] = useState<Mapped[]>([]);
   const [active, setActive] = useState<RegionKey | null>(null);
@@ -90,7 +72,6 @@ export function FaceConcernMap() {
 
   useEffect(() => {
     if (!imageBase64 || !landmarks || regions.length === 0) {
-      setMapped([]);
       return;
     }
     let cancelled = false;
@@ -116,7 +97,7 @@ export function FaceConcernMap() {
           num: out.length + 1,
           markers,
           crop,
-          flagged: flaggedSet.has(region),
+          flagged: true,
         });
       }
       if (!cancelled) setMapped(out);
@@ -124,9 +105,10 @@ export function FaceConcernMap() {
     return () => {
       cancelled = true;
     };
-  }, [imageBase64, imageMediaType, landmarks, regions, flaggedSet]);
+  }, [imageBase64, imageMediaType, landmarks, regions]);
 
-  if (!dataUrl || mapped.length === 0) return null;
+  if (!dataUrl || regions.length === 0 || mapped.length === 0 ||
+      mapped.some((item) => !regions.includes(item.region))) return null;
 
   const focusCount = mapped.filter((m) => m.flagged).length;
   // Flatten to individual markers (each pin/ellipse), keeping its region + number.
@@ -150,8 +132,8 @@ export function FaceConcernMap() {
       <p className="mx-auto mt-1 max-w-md text-center text-[13px] leading-relaxed text-body/80">
         Mapped from your own photo, on your device.
         {focusCount > 0
-          ? " The highlighted areas are where the Endomax Lift can make the most difference for you."
-          : " Each marker shows an area the Endomax Lift can refine — confirmed at your consultation."}
+          ? " The highlighted areas are observations to discuss with Dr Ayda, who will assess whether treatment is suitable."
+          : " Your clinician will confirm whether treatment is suitable."}
       </p>
 
       {/* ── The map ─────────────────────────────────────────────────────── */}
@@ -348,31 +330,6 @@ export function FaceConcernMap() {
                 <p className="mt-1 text-[12.5px] leading-relaxed text-body">
                   {covered ? beardBlurb(m.region) : copy.blurb}
                 </p>
-                {!covered &&
-                  typeof areaEnhancements?.[m.region] === "number" && (
-                    <div className="mt-2.5">
-                      <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.12em]">
-                        <span className="text-body/70">
-                          Enhancement potential
-                        </span>
-                        <span className="text-peach">
-                          ↑ {areaEnhancements[m.region]}%
-                        </span>
-                      </div>
-                      <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-                        <motion.div
-                          className="h-full rounded-full bg-gradient-to-r from-peach-deep via-peach to-peach-light"
-                          initial={{ width: 0 }}
-                          animate={{ width: `${areaEnhancements[m.region]}%` }}
-                          transition={{
-                            duration: 0.9,
-                            ease: EASE,
-                            delay: 0.25 + i * 0.06,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
               </div>
             </motion.div>
           );

@@ -1,100 +1,44 @@
-// JSON schema for Claude's structured photo assessment. Deliberately simple —
-// structured outputs don't support min/max/length constraints, and every object
-// needs additionalProperties:false.
+import { FOCUS_FINDINGS } from "../focus-findings";
+import { JOWL_GRADES, NECK_TYPES } from "../lower-face-profile";
 
 export const RESULT_SCHEMA = {
-  type: "object",
-  additionalProperties: false,
+  type: "object", additionalProperties: false,
   properties: {
-    suitability: {
-      type: "string",
-      enum: ["strong", "good", "consultation", "alternative"],
-      description:
-        "The cosmetic suitability outcome. 'strong' = a clear, treatable lower-face concern in an Endomax Lift target area (jawline softening, jowls, under-chin fullness, neck laxity) — the ideal candidate; 'good' = milder/subtler softening; 'consultation' = the photo can't be assessed or the case is genuinely borderline; 'alternative' = clearly excessive/heavy skin realistically needing surgery.",
-    },
-    laxityFit: {
-      type: "number",
-      description:
-        "0–40. How CLEARLY a treatable lower-face concern is present (visible jawline softening, jowls, under-chin fullness, neck laxity). A clear, treatable concern scores HIGH — this is exactly who the Endomax Lift helps. Score low only when there is no visible concern at all, or the laxity is so excessive it realistically needs surgery. Judge ONLY from this photo, with fine gradations — avoid identical values across different faces.",
-    },
-    skinQuality: {
-      type: "number",
-      description:
-        "0–30. Apparent skin health and resilience for an energy-based tightening treatment (healthy, even skin scores higher). Judge only from this photo, with fine gradations.",
-    },
-    areaFit: {
-      type: "number",
-      description:
-        "0–30. How well the standout concern sits in an Endomax Lift target area (jawline, jowls, under-chin, neck, mid-face). A concern squarely in these areas scores high. Judge only from this photo, with fine gradations.",
-    },
-    lowerFaceObscured: {
-      type: "boolean",
-      description:
-        "True ONLY if a full, dense beard completely hides the jawline, under-chin or neck so the skin cannot be seen at all in the photo. False for clean-shaven faces, stubble, short or close-cropped beards, patchy facial hair, and any beard through which the underlying skin is still visible — when in doubt, set it false. A beard does NOT disqualify treatment — it only limits what the photo can show.",
-    },
+    suitability: { type: "string", enum: ["strong", "good", "consultation", "alternative"], description: "Legacy routing only; not confirmed medical suitability. Use consultation when unclear." },
+    laxityFit: { type: "number", description: "Legacy routing field 0–40; never an outcome prediction." },
+    skinQuality: { type: "number", description: "Return 0: skin resilience cannot be measured from this selfie." },
+    areaFit: { type: "number", description: "Legacy area relevance field 0–30; not a probability of improvement." },
+    lowerFaceObscured: { type: "boolean", description: "True only when dense beard hair hides the relevant lower-face skin. Ordinary stubble is acceptable." },
     areaEnhancements: {
-      type: "array",
-      description:
-        "For each Endomax Lift target area whose skin you can ACTUALLY see and assess in THIS photo, an indicative cosmetic enhancement potential — roughly how much firmer, smoother or more defined that area could realistically look after the Endomax Lift, as a percentage 0–100. Higher for clearly treatable concerns (55–80), modest for subtle areas (30–50), low where little is needed (20–35). Do NOT include any area hidden by a beard or not clearly visible. 1–5 items, judged from this face with fine gradations.",
+      type: "array", description: "Return an empty array. No validated percentage predictor is available.",
       items: {
-        type: "object",
-        additionalProperties: false,
-        properties: {
-          area: {
-            type: "string",
-            enum: [
-              "under-eye",
-              "cheeks",
-              "mid-face",
-              "jawline",
-              "jowls",
-              "chin",
-              "under-chin",
-              "neck",
-            ],
-          },
-          enhancementPercent: { type: "number" },
-        },
+        type: "object", additionalProperties: false,
+        properties: { area: { type: "string" }, enhancementPercent: { type: "number" } },
         required: ["area", "enhancementPercent"],
       },
     },
-    framingAdequate: {
-      type: "boolean",
-      description:
-        "True only if the photo clearly shows the LOWER face — the jawline, under-chin and ideally the neck — well enough to assess for skin tightening. False if the photo shows mostly the upper/mid face, the jaw/chin/neck is cut off or out of frame, the head is at too steep an angle, the face is too small/far, or it's a screenshot or not a clean front-facing selfie. When false the person should retake their photo.",
+    jowlGrade: { type: "string", enum: JOWL_GRADES, description: "Visual jowl grade: none, mild, moderate, advanced; unclear when the jawline cannot be read." },
+    neckType: { type: "string", enum: NECK_TYPES, description: "Which neck pattern the photo appears most consistent with; unclear when the neck/under-chin cannot be read." },
+    framingAdequate: { type: "boolean", description: "True if at least one lower-face area is readable. Only false when none can be described. Retakes remain optional." },
+    focusFindings: {
+      type: "array", description: "Up to three genuinely visible patterns, matching areaObservations. Never add an area just because it is visible.",
+      items: { type: "string", enum: FOCUS_FINDINGS },
     },
-    headline: {
-      type: "string",
-      description: "A warm, 6–10 word headline for the result screen.",
+    areaObservations: {
+      type: "array", description: "Up to three specific patterns. Prioritise jawline and neck if both have findings. Describe visible location, contour or texture, without diagnosing its cause.",
+      items: {
+        type: "object", additionalProperties: false,
+        properties: {
+          finding: { type: "string", enum: FOCUS_FINDINGS },
+          observation: { type: "string", description: "One personalised sentence about the visible pattern and location; at most 40 words." },
+        },
+        required: ["finding", "observation"],
+      },
     },
-    narrative: {
-      type: "string",
-      description:
-        "2–3 short sentences, personalized-but-careful, cosmetic not diagnostic. UK English.",
-    },
-    observedAreas: {
-      type: "array",
-      items: { type: "string" },
-      description:
-        "1–3 lower-face areas referenced in general terms (e.g. 'jawline', 'under-chin').",
-    },
-    encouragement: {
-      type: "string",
-      description:
-        "One reassuring sentence inviting a free consultation, noting that final suitability and safety are confirmed in person.",
-    },
+    headline: { type: "string", description: "6–10 words naming the visible focus, without promising results." },
+    narrative: { type: "string", description: "Two short sentences, up to 55 words: visible pattern then relevant treatment mechanism and possible direction of change." },
+    observedAreas: { type: "array", items: { type: "string" }, description: "Only areas with supported findings; empty when unreadable." },
+    encouragement: { type: "string", description: "Invite the free 15-minute online consultation with Dr Ayda, with phone fallback." },
   },
-  required: [
-    "suitability",
-    "laxityFit",
-    "skinQuality",
-    "areaFit",
-    "lowerFaceObscured",
-    "areaEnhancements",
-    "framingAdequate",
-    "headline",
-    "narrative",
-    "observedAreas",
-    "encouragement",
-  ],
+  required: ["suitability", "laxityFit", "skinQuality", "areaFit", "lowerFaceObscured", "jowlGrade", "neckType", "areaEnhancements", "framingAdequate", "focusFindings", "areaObservations", "headline", "narrative", "observedAreas", "encouragement"],
 } as const;

@@ -30,6 +30,16 @@ export interface ReportArea {
   enhancement?: number | null;
 }
 
+export interface ReportProfileEntry {
+  label: string;
+  name: string;
+  commonName: string;
+  fitLabel: string;
+  what: string;
+  why: string;
+  howItHelps: string;
+}
+
 export interface ReportInput {
   clinicName: string;
   treatmentName: string;
@@ -39,6 +49,12 @@ export interface ReportInput {
   phone: string;
   email: string;
   bookingUrl: string;
+  calculatorUrl?: string;
+  logoDataUrl?: string | null;
+  doctorPhotoDataUrl?: string | null;
+  doctorName?: string;
+  doctorRole?: string;
+  doctorProfile?: string;
   addressLines: string[];
   preparedFor?: string;
   dateStr: string;
@@ -52,6 +68,8 @@ export interface ReportInput {
   faceImageDataUrl?: string | null;
   faceImageAspect?: number; // width / height — preserved so the photo isn't stretched
   areas: ReportArea[];
+  /** "Your lower-face profile": jowl type and neck type, shown first on page 2. */
+  profile?: ReportProfileEntry[];
   priceFrom: string;
   priceNote: string;
   disclaimer: string;
@@ -152,6 +170,9 @@ export function buildReportPdf(input: ReportInput): Blob {
   doc.setFont("times", "normal");
   doc.setFontSize(20);
   doc.setTextColor(...P.heading);
+  if (input.logoDataUrl) {
+    try { doc.addImage(input.logoDataUrl, "PNG", PW / 2 - 13, 4, 26, 26); } catch { /* clinic name remains */ }
+  }
   doc.text(input.clinicName.toUpperCase(), PW / 2, 33, { align: "center" });
   doc.setFontSize(7.5);
   doc.setTextColor(...P.gold);
@@ -288,6 +309,45 @@ export function buildReportPdf(input: ReportInput): Blob {
   runningHeader();
   y = 28;
 
+  if (input.profile && input.profile.length > 0) {
+    sectionTitle("Your lower-face profile", y);
+    y += 9;
+    for (const p of input.profile) {
+      const body = (t: string) => doc.splitTextToSize(t, CW - 10);
+      const what = body(`What it is: ${p.what}`);
+      const why = body(`Why it happens: ${p.why}`);
+      const how = body(p.howItHelps);
+      const h = 24 + (what.length + why.length) * 4.4 + how.length * 4.4 + 12;
+      ensure(h);
+      doc.setFillColor(...P.panel);
+      doc.roundedRect(M, y, CW, h - 4, 2, 2, "F");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(7.5);
+      doc.setTextColor(...P.gold);
+      doc.text(p.label.toUpperCase(), M + 5, y + 6, { charSpace: 0.4 });
+      doc.setFont("times", "normal");
+      doc.setFontSize(14);
+      doc.setTextColor(...P.heading);
+      doc.text(p.name, M + 5, y + 13);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8.5);
+      doc.setTextColor(...P.goldLt);
+      doc.text(`Often called ${p.commonName}  ·  ${p.fitLabel}`, M + 5, y + 18.5);
+      doc.setTextColor(...P.body);
+      let yy = y + 24;
+      doc.text(what, M + 5, yy); yy += what.length * 4.4;
+      doc.text(why, M + 5, yy); yy += why.length * 4.4 + 2;
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(...P.heading);
+      doc.text(`How ${T} helps`, M + 5, yy); yy += 4.4;
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(...P.body);
+      doc.text(how, M + 5, yy);
+      y += h;
+    }
+    y += 4;
+  }
+
   if (input.usedPhoto && input.faceImageDataUrl) {
     // Fit the photo into a max box preserving its true aspect ratio — never
     // stretch it (a tall phone screenshot must stay tall, not squashed).
@@ -320,7 +380,7 @@ export function buildReportPdf(input: ReportInput): Blob {
 
   if (input.areas.length > 0) {
     ensure(14);
-    sectionTitle("The areas we focused on", y);
+    sectionTitle("Why these areas may be worth discussing", y);
     y += 9;
     for (const a of input.areas) {
       const blurbLines = doc.splitTextToSize(a.blurb, CW - 30);
@@ -382,6 +442,24 @@ export function buildReportPdf(input: ReportInput): Blob {
     }
   }
 
+  if (input.doctorName) {
+    ensure(34);
+    doc.setFillColor(...P.panel);
+    doc.roundedRect(M, y, CW, 30, 2, 2, "F");
+    if (input.doctorPhotoDataUrl) {
+      try { doc.addImage(input.doctorPhotoDataUrl, "JPEG", M + 3, y + 3, 24, 24); } catch { /* text remains */ }
+    }
+    const dx = input.doctorPhotoDataUrl ? M + 32 : M + 7;
+    doc.setFont("times", "normal"); doc.setFontSize(12); doc.setTextColor(...P.heading);
+    doc.text(input.doctorName, dx, y + 8);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...P.gold);
+    doc.text(input.doctorRole || "Clinical consultant", dx, y + 13);
+    doc.setTextColor(...P.body);
+    const profile = doc.splitTextToSize(input.doctorProfile || "Your free 15-minute online consultation is the next step.", CW - (dx - M) - 8);
+    doc.text(profile.slice(0, 3), dx, y + 18);
+    y += 35;
+  }
+
   ensure(16);
   doc.setDrawColor(...P.line);
   doc.setLineWidth(0.2);
@@ -401,6 +479,14 @@ export function buildReportPdf(input: ReportInput): Blob {
   doc.text(pn, M, y + 5);
   y += 5 + pn.length * 4 + 6;
 
+  if (input.calculatorUrl) {
+    ensure(12);
+    doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(...P.gold);
+    doc.text("Explore your monthly payment calculator  >", M, y);
+    doc.link(M, y - 5, CW, 8, { url: input.calculatorUrl });
+    y += 9;
+  }
+
   ensure(20);
   doc.setFillColor(...P.panel);
   doc.setDrawColor(...P.gold);
@@ -408,12 +494,13 @@ export function buildReportPdf(input: ReportInput): Blob {
   doc.roundedRect(M, y, CW, 17, 2.5, 2.5, "FD");
   doc.setFont("times", "normal");
   doc.setFontSize(13);
-  doc.setTextColor(...P.goldLt);
+  doc.setTextColor(...P.heading);
   doc.text("Book your free consultation", M + 7, y + 7.5);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8.5);
   doc.setTextColor(...P.body);
-  doc.text(`${input.bookingUrl}   ·   ${input.phone}`, M + 7, y + 12.5);
+  doc.text(`15 minutes online with Dr Ayda  ·  ${input.phone}`, M + 7, y + 12.5);
+  doc.link(M, y, CW, 17, { url: input.bookingUrl });
 
   footer();
   return doc.output("blob");

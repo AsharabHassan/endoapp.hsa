@@ -6,11 +6,8 @@ import { OFFER } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Illustrative 0% finance calculator. HSA advertises 0% finance (see
-// TRUST_MARKERS), so the illustration is a simple interest-free split of the
-// treatment cost across the chosen term. Eligibility, terms and the finance
-// provider's details are confirmed at consultation — the small print below
-// keeps every figure clearly illustrative.
+// Payment calculator using the clinic's starting package and advertised 0%
+// finance options. The quote, provider and eligibility are confirmed separately.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const TERMS = [3, 6, 9, 12] as const;
@@ -34,16 +31,16 @@ export function FinanceCalculator() {
   const monthly = amount / months;
 
   return (
-    <div className="rounded-2xl border border-peach/20 bg-white/[0.04] p-6 shadow-soft sm:p-8">
+    <div className="rounded-[1.75rem] border border-[#cdb682] bg-[#fffaf0] p-6 text-[#2e261d] shadow-[0_24px_80px_-42px_rgba(88,61,22,0.45)] sm:p-8">
       <div className="flex items-center gap-2">
-        <PoundSterling size={16} className="text-peach" />
-        <h3 className="font-serif text-xl text-heading">
-          Spread the cost with 0% finance
+        <PoundSterling size={16} className="text-[#9b792e]" />
+        <h3 className="font-serif text-xl !text-[#2e261d]">
+          Explore your payment plan
         </h3>
       </div>
-      <p className="mt-1 text-[13px] leading-relaxed text-body/80">
-        Pay for your Endomax Lift in interest-free monthly instalments. Move
-        the slider to see an illustrative plan for your treatment.
+      <p className="mt-1 text-[13px] leading-relaxed text-[#65594b]">
+        Endomax Lift packages start from £2,000. Adjust the amount and term to
+        see the monthly split at 0% interest.
       </p>
 
       {/* Treatment cost slider */}
@@ -51,34 +48,33 @@ export function FinanceCalculator() {
         <div className="flex items-baseline justify-between">
           <label
             htmlFor="finance-amount"
-            className="text-sm font-medium text-heading"
+            className="text-sm font-medium text-[#2e261d]"
           >
             Treatment cost
           </label>
-          <span className="font-serif text-2xl text-heading">
+          <span className="font-serif text-2xl text-[#2e261d]">
             {gbp0.format(amount)}
           </span>
         </div>
         <input
           id="finance-amount"
           type="range"
-          min={500}
-          max={4000}
+          min={OFFER.price}
+          max={6000}
           step={50}
           value={amount}
           onChange={(e) => setAmount(Number(e.target.value))}
-          className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-cream-deep accent-peach"
+          className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-[#e9dcc4] accent-[#ad893e]"
         />
-        <div className="mt-1 flex justify-between text-[11px] text-body/60">
-          <span>£500</span>
-          <span>Endomax Lift from {gbp0.format(OFFER.price)}</span>
-          <span>£4,000</span>
+        <div className="mt-1 flex justify-between text-[11px] text-[#7d6d59]">
+          <span>{gbp0.format(OFFER.price)}</span>
+          <span>£6,000</span>
         </div>
       </div>
 
       {/* Term selector */}
       <div className="mt-6">
-        <p className="text-sm font-medium text-heading">Repay over</p>
+        <p className="text-sm font-medium text-[#2e261d]">Repay over</p>
         <div className="mt-2 grid grid-cols-4 gap-2">
           {TERMS.map((t) => (
             <button
@@ -89,8 +85,8 @@ export function FinanceCalculator() {
               className={cn(
                 "rounded-full border px-3 py-2 text-sm font-medium transition-colors",
                 months === t
-                  ? "border-peach bg-peach font-semibold text-ink shadow-glow"
-                  : "border-peach/25 bg-transparent text-heading hover:bg-peach/10",
+                  ? "border-[#a98538] bg-[#b99449] font-semibold text-white shadow-[0_8px_24px_-10px_rgba(120,87,30,0.7)]"
+                  : "border-[#d5c3a3] bg-white/70 text-[#4c3c2a] hover:bg-[#f4ead6]",
               )}
             >
               {t} mo
@@ -100,25 +96,26 @@ export function FinanceCalculator() {
       </div>
 
       {/* Result */}
-      <div className="mt-6 rounded-xl bg-white/[0.05] p-5 text-center">
-        <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-body/70">
-          Illustrative monthly payment
+      <div className="mt-6 rounded-xl border border-[#dfcba8] bg-[#f1e4ca] p-5 text-center">
+        <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#745d38]">
+          Monthly payment estimate
         </p>
-        <p className="mt-1 font-serif text-4xl text-heading">
+        <p className="mt-1 font-serif text-4xl text-[#2e261d]">
           {gbp.format(monthly)}
-          <span className="text-base text-body/70"> /month</span>
+          <span className="text-base text-[#65594b]"> /month</span>
         </p>
-        <p className="mt-2 text-[12px] text-body/70">
+        <p className="mt-2 text-[12px] text-[#65594b]">
           {months} interest-free payments · total {gbp.format(amount)} · cost
           of credit £0.00
         </p>
       </div>
 
-      <p className="mt-4 text-[11px] leading-relaxed text-body/60">
-        Illustration only — 0% APR representative, subject to status and
-        lender approval. 18+, UK residents. Your finance options, eligibility
-        and exact treatment price are confirmed at your free consultation.
+      <p className="mt-4 text-[11px] leading-relaxed text-[#746656]">
+        0% finance options depend on the provider and approval. Your exact
+        treatment quote, payment schedule and eligibility are confirmed before
+        any finance agreement.
       </p>
     </div>
   );
 }
+

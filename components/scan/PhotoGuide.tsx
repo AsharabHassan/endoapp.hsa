@@ -5,9 +5,8 @@ import type { ReactNode } from "react";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // On-brand, illustrative "how to take your photo" guide. Pure inline SVG line-art
-// (no images to license, no privacy concerns) in the Harley Street Aesthetics
-// gold/dark palette. A clear front-facing, well-lit, lower-face-visible selfie gives the
-// AI the best read — which keeps suitability results accurate and encouraging.
+// (no images to license) in the Harley Street Aesthetics warm-gold palette.
+// A front-facing, well-lit, lower-face-visible selfie supports a clearer guide.
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface Tip {
@@ -113,33 +112,33 @@ const TIPS: Tip[] = [
 
 export function PhotoGuide() {
   return (
-    <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-4 sm:p-5">
-      <p className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-body/70">
-        For the most accurate read
+    <div className="rounded-[1.5rem] border border-[#d8c7a8] bg-[#f8f1e5] p-4 sm:p-5">
+      <p className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8c7149]">
+        For a clearer guide
       </p>
       <div className="mt-3 grid grid-cols-3 gap-2 sm:gap-3">
         {TIPS.map((t) => (
           <div
             key={t.label}
-            className="flex flex-col items-center rounded-2xl bg-white/[0.03] px-1.5 py-2.5 text-center"
+            className="flex flex-col items-center rounded-2xl border border-[#e3d4b9] bg-[#fffbf4] px-1.5 py-2.5 text-center"
           >
             <div className="relative">
               <div
                 className={`flex h-12 w-12 items-center justify-center sm:h-14 sm:w-14 ${
-                  t.ok ? "text-heading" : "text-heading/70"
+                  t.ok ? "text-[#4b3a24]" : "text-[#806b4f]"
                 }`}
               >
                 {t.art}
               </div>
               <span
                 className={`absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full text-white ${
-                  t.ok ? "bg-sage-deep" : "bg-peach-deep"
+                  t.ok ? "bg-[#8b795c]" : "bg-[#b58a48]"
                 }`}
               >
                 {t.ok ? <Check size={10} strokeWidth={3} /> : <X size={10} strokeWidth={3} />}
               </span>
             </div>
-            <span className="mt-1.5 text-[10px] font-medium leading-tight text-heading/80 sm:text-[11px]">
+            <span className="mt-1.5 text-[10px] font-medium leading-tight text-[#5e4e3b] sm:text-[11px]">
               {t.label}
             </span>
           </div>

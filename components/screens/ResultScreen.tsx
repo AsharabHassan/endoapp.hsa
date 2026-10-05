@@ -1,25 +1,24 @@
 "use client";
 
-import { motion } from "motion/react";
+import { ReportOverview } from "@/components/result/ReportOverview";
+import { TreatmentScience } from "@/components/result/TreatmentScience";
+import { Reveal } from "@/components/ui/Reveal";
 import { useState } from "react";
-import { Sparkles, Info, Download, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowRight, Download, Loader2 } from "lucide-react";
 import { useWizard } from "@/store/wizard-store";
-import { SuitabilityGauge } from "@/components/result/SuitabilityGauge";
-import { FaceConcernMap } from "@/components/result/FaceConcernMap";
+
 import { WhatToExpect } from "@/components/result/WhatToExpect";
 import { ResultsGallery } from "@/components/result/ResultsGallery";
 import { Testimonials } from "@/components/result/Testimonials";
-import { BookingCTA } from "@/components/result/BookingCTA";
-import { DisclaimerBanner } from "@/components/compliance/DisclaimerBanner";
-import { BUCKET_META, ENDOLIFT_AREAS } from "@/lib/constants";
-import { EASE } from "@/lib/motion";
+import { BookingCTA, openEmbeddedBooking } from "@/components/result/BookingCTA";
+import { BookingCalendar } from "@/components/offer/BookingCalendar";
+import { DoctorProfile } from "@/components/result/DoctorProfile";
 
-const reveal = (delay: number) => ({
-  initial: { opacity: 0, y: 18 },
-  animate: { opacity: 1, y: 0 },
-  transition: { delay, duration: 0.6, ease: EASE },
-});
+import { DisclaimerBanner } from "@/components/compliance/DisclaimerBanner";
+import { FinanceCalculator } from "@/components/offer/FinanceCalculator";
+import { BOOKING_URL } from "@/lib/constants";
+
+
 
 export function ResultScreen() {
   const result = useWizard((s) => s.result);
@@ -28,145 +27,49 @@ export function ResultScreen() {
   const landmarks = useWizard((s) => s.landmarks);
   const lead = useWizard((s) => s.lead);
   const [downloading, setDownloading] = useState(false);
-
   if (!result) return null;
 
-  const meta = BUCKET_META[result.bucket];
-  const { narrative } = result;
+
+
 
   async function downloadReport() {
     if (!result) return;
     setDownloading(true);
     try {
       const { generateReportPdf } = await import("@/lib/report");
-      const blob = await generateReportPdf({
-        result,
-        imageBase64,
-        imageMediaType,
-        landmarks,
-        lead,
-      });
+      const blob = await generateReportPdf({ result, imageBase64, imageMediaType, landmarks, lead });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      const who = lead?.firstName ? `-${lead.firstName}` : "";
-      a.download = `Endomax-Lift-Report${who}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      a.download = `Endomax-Lift-Report${lead?.firstName ? `-${lead.firstName}` : ""}.pdf`;
+      document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 1500);
-    } catch {
-      /* ignore — download is best-effort */
-    } finally {
-      setDownloading(false);
-    }
+    } finally { setDownloading(false); }
   }
-  const areas =
-    narrative.observedAreas.length > 0
-      ? narrative.observedAreas
-      : (ENDOLIFT_AREAS as readonly string[]);
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-6 py-10">
-      <motion.div {...reveal(0)} className="flex flex-col items-center text-center">
-        <span className="inline-flex items-center gap-2 rounded-full border border-peach/30 bg-peach/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-peach">
-          <Sparkles size={13} /> {meta.label}
-        </span>
-        <h2 className="mt-4 font-serif text-[32px] leading-tight text-heading sm:text-[40px]">
-          {narrative.headline}
-        </h2>
-      </motion.div>
+    <div className="relative w-full overflow-hidden bg-[#f3ecdf] pb-28 text-[#302719] md:pb-10">
+      <ReportOverview />
+      <TreatmentScience />
 
-      <motion.div {...reveal(0.25)} className="mt-8 flex justify-center">
-        <SuitabilityGauge
-          score={result.score}
-          accent={meta.accent}
-          label={meta.label}
-        />
-      </motion.div>
+      <div id="finance" className="mx-auto grid max-w-6xl gap-8 px-5 py-16 sm:px-8 lg:grid-cols-[.75fr_1fr] lg:items-center lg:py-24">
+        <div><p className="text-[11px] font-bold uppercase tracking-[.22em] text-[#96733b]">Plan with clarity</p><h2 className="mt-3 font-serif text-4xl !text-[#302719]">Endomax Lift packages from £2,000.</h2><p className="mt-5 text-sm leading-[1.8] text-[#625648]">Explore monthly payments with the calculator. Your treatment plan, exact cost and finance eligibility are confirmed after consultation.</p><Reveal className="mt-8"><DoctorProfile /></Reveal></div>
+        <Reveal><FinanceCalculator /></Reveal>
+      </div>
 
-      <motion.div
-        {...reveal(0.5)}
-        className="mt-8 rounded-[2rem] border border-white/10 bg-white/[0.04] p-7 shadow-soft"
-      >
-        <p className="text-[15px] leading-relaxed text-body">
-          {narrative.narrative}
-        </p>
-
-        <div className="mt-5 flex flex-wrap gap-2">
-          {areas.map((a) => (
-            <span
-              key={a}
-              className="rounded-full bg-cream-deep px-3 py-1 text-xs font-medium capitalize text-heading"
-            >
-              {a}
-            </span>
-          ))}
+      <div className="report-dark bg-[#3a3026] px-5 py-16 sm:px-8"><div className="mx-auto max-w-5xl"><Reveal><WhatToExpect /></Reveal><Reveal><ResultsGallery /></Reveal><details className="mt-10 rounded-2xl border border-white/15 p-5"><summary className="cursor-pointer font-serif text-xl text-[#fff8eb]">Patient experiences</summary><Testimonials /></details><div className="mt-12 rounded-[2rem] border border-[#b9975d]/40 bg-[#4b3c2b] p-7 text-center"><h2 className="font-serif text-3xl text-[#fff8eb]">Discuss your guide with Dr Ayda</h2><p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-[#d7c9b4]">Your free 15-minute online call is the next step. Bring your questions; a phone call is available if video does not suit you.</p><div className="mx-auto mt-7 max-w-sm"><BookingCTA embedded /></div></div></div></div>
+      <section id="consultation" tabIndex={-1} aria-labelledby="consultation-title" className="mx-auto max-w-5xl scroll-mt-28 px-3 pt-14 outline-none sm:px-8">
+        <div className="mb-7 text-center">
+          <p className="text-[11px] font-bold uppercase tracking-[.2em] text-[#95743d]">Your next step</p>
+          <h2 id="consultation-title" className="mt-3 font-serif text-3xl !text-[#302719] sm:text-4xl">Book your free online consultation</h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[#625648]">Choose a time for your 15-minute online consultation with Dr Ayda. A phone call is available if video does not suit you.</p>
+          {lead && <p className="mt-3 text-xs text-[#755f3f]">Your contact details will be filled in for you. Please check them before confirming your appointment.</p>}
         </div>
-
-        <p className="mt-5 border-t border-sage/15 pt-4 text-[15px] font-medium leading-relaxed text-heading">
-          {narrative.encouragement}
-        </p>
-      </motion.div>
-
-      {result.usedPhoto && result.lowerFaceObscured && (
-        <motion.div
-          {...reveal(0.55)}
-          className="mt-6 flex items-start gap-2.5 rounded-2xl border border-peach/25 bg-peach/[0.06] px-4 py-3"
-        >
-          <Info size={16} className="mt-0.5 shrink-0 text-peach" />
-          <p className="text-[13px] leading-relaxed text-body">
-            <span className="font-semibold text-heading">Beard noticed.</span> A
-            fuller beard hides the jawline, under-chin and neck, so we&rsquo;ve
-            kept the read light on those areas. The Endomax Lift works just as
-            well under a beard — your practitioner will confirm these precisely
-            in person.
-          </p>
-        </motion.div>
-      )}
-
-      <motion.div {...reveal(0.6)} className="mt-10">
-        <FaceConcernMap />
-      </motion.div>
-
-      <motion.div {...reveal(0.7)} className="mt-8">
-        <WhatToExpect />
-      </motion.div>
-
-      <motion.div {...reveal(0.8)} className="mt-10">
-        <ResultsGallery />
-      </motion.div>
-
-      <motion.div {...reveal(0.9)} className="mt-10">
-        <Testimonials />
-      </motion.div>
-
-      <motion.div {...reveal(1)} className="mt-10">
-        <BookingCTA label={meta.ctaLabel} />
-      </motion.div>
-
-      <motion.div {...reveal(1.05)} className="mt-4 flex justify-center">
-        <Button
-          variant="outline"
-          onClick={downloadReport}
-          disabled={downloading}
-        >
-          {downloading ? (
-            <>
-              <Loader2 size={16} className="animate-spin" /> Preparing your
-              report…
-            </>
-          ) : (
-            <>
-              <Download size={16} /> Download your report (PDF)
-            </>
-          )}
-        </Button>
-      </motion.div>
-
-      <motion.div {...reveal(1.1)}>
-        <DisclaimerBanner className="mt-8" />
-      </motion.div>
+        <BookingCalendar calendarUrl={BOOKING_URL} lead={lead} />
+      </section>
+      <div className="mx-auto max-w-5xl px-5 py-10 text-center sm:px-8"><button onClick={downloadReport} disabled={downloading} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#b79b6c] px-5 text-sm font-medium text-[#47351b] transition hover:bg-[#e9dcc3] disabled:opacity-60">{downloading ? <><Loader2 size={16} className="animate-spin" /> Preparing report…</> : <><Download size={16} /> Download your PDF report</>}</button><DisclaimerBanner className="mt-8" /></div>
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#c6ab7a] bg-[#f9f1e4]/95 p-3 pb-[max(12px,env(safe-area-inset-bottom))] shadow-[0_-15px_45px_-20px_rgba(61,42,16,.45)] backdrop-blur-xl md:hidden"><a href="#consultation" onClick={openEmbeddedBooking} className="cinematic-button flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#30271c] px-4 text-center text-sm font-semibold text-[#fff8e9]"><span>Book free online consultation</span><ArrowRight size={17} /></a></div>
     </div>
   );
 }
+

@@ -6,7 +6,6 @@ import {
   regionMarkers,
   regionRect,
   faceVisibleSide,
-  toRegionKey,
   REGION_ORDER,
   REGION_COPY,
   REGION_LABEL,
@@ -19,11 +18,15 @@ import {
   BOOKING_URL,
   PRICE_GUIDE,
   DISCLAIMER,
+  CONSULTANT,
+  SITE_URL,
 } from "./constants";
 import { buildReportPdf, type ReportArea } from "./report-pdf";
+import { focusExplanations, focusRegionKeys } from "./focus-findings";
+import { FIT_LABEL, lowerFaceProfile } from "./lower-face-profile";
+import type { ReportProfileEntry } from "./report-pdf";
 
 // Mirrors the on-screen FaceConcernMap so the PDF matches what the client saw.
-const CORE: RegionKey[] = ["undereye", "cheeks", "jawline", "chin"];
 const BEARD_COVERED: RegionKey[] = ["jawline", "chin", "neck"];
 
 function loadImage(src: string): Promise<HTMLImageElement> {
@@ -33,6 +36,19 @@ function loadImage(src: string): Promise<HTMLImageElement> {
     img.onerror = () => reject(new Error("image-load-failed"));
     img.src = src;
   });
+}
+
+async function localImageData(src: string, format: "image/png" | "image/jpeg"): Promise<string | null> {
+  try {
+    const img = await loadImage(src);
+    const canvas = document.createElement("canvas");
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.drawImage(img, 0, 0);
+    return canvas.toDataURL(format, .9);
+  } catch { return null; }
 }
 
 function beardBlurb(r: RegionKey): string {
@@ -46,19 +62,14 @@ function planRegions(
   landmarks: NormalizedPoint[],
   result: AnalyzeResult,
 ): { region: RegionKey; num: number; flagged: boolean; covered: boolean }[] {
-  const flagged = new Set(
-    (result.narrative.observedAreas ?? [])
-      .map(toRegionKey)
-      .filter((r): r is RegionKey => r !== null),
-  );
-  const wanted = [...CORE, ...(flagged.has("neck") ? (["neck"] as const) : [])];
+  const wanted = focusRegionKeys(result);
   const regions = REGION_ORDER.filter(
     (r) => wanted.includes(r) && regionMarkers(r, landmarks).length > 0,
   );
   return regions.map((region, i) => ({
     region,
     num: i + 1,
-    flagged: flagged.has(region),
+    flagged: true,
     covered: Boolean(result.lowerFaceObscured) && BEARD_COVERED.includes(region),
   }));
 }
@@ -137,8 +148,9 @@ export async function generateReportPdf(opts: {
   let faceImageDataUrl: string | null = null;
   let faceImageAspect: number | undefined;
   let areas: ReportArea[] = [];
+  const explanations = focusExplanations(result);
 
-  if (result.usedPhoto && imageBase64 && landmarks && !result.lowerFaceObscured) {
+  if (result.usedPhoto && imageBase64 && landmarks) {
     const face = await renderAnnotatedFace(
       imageBase64,
       imageMediaType,
@@ -150,6 +162,7 @@ export async function generateReportPdf(opts: {
     const plan = planRegions(landmarks, result);
     areas = await Promise.all(
       plan.map(async ({ region, num, flagged, covered }) => {
+        const regionalExplanations = explanations.filter((item) => item.region === region);
         const rect = regionRect(region, landmarks);
         const cropDataUrl = rect
           ? await cropImage(imageBase64, imageMediaType, rect)
@@ -157,16 +170,35 @@ export async function generateReportPdf(opts: {
         return {
           num,
           title: REGION_COPY[region].title,
-          blurb: covered ? beardBlurb(region) : REGION_COPY[region].blurb,
+          blurb: covered
+            ? beardBlurb(region)
+            : regionalExplanations.length
+              ? regionalExplanations.map((item) => `${item.pattern}: ${item.observation} ${item.whyDiscuss}`).join("\n\n")
+              : REGION_COPY[region].blurb,
           cropDataUrl,
           covered,
           flagged,
-          enhancement: covered
-            ? null
-            : (result.areaEnhancements?.[region] ?? null),
+          enhancement: null,
         } satisfies ReportArea;
       }),
     );
+  }
+
+  // Keep the explanatory report useful even when the on-device landmark map is unavailable.
+  if (result.usedPhoto && imageBase64 && !faceImageDataUrl) {
+    const source = `data:${imageMediaType};base64,${imageBase64}`;
+    faceImageDataUrl = await localImageData(source, "image/jpeg");
+    if (faceImageDataUrl) {
+      const image = await loadImage(faceImageDataUrl);
+      faceImageAspect = image.naturalWidth / image.naturalHeight;
+    }
+  }
+  if (areas.length === 0 && explanations.length > 0) {
+    areas = explanations.map((item, i) => ({
+      num: i + 1, title: item.area,
+      blurb: `${item.pattern}: ${item.observation} ${item.whyDiscuss}`,
+      cropDataUrl: null, covered: false, flagged: true, enhancement: null,
+    }));
   }
 
   const dateStr = new Date().toLocaleDateString("en-GB", {
@@ -175,25 +207,35 @@ export async function generateReportPdf(opts: {
     year: "numeric",
   });
 
+  const [logoDataUrl, doctorPhotoDataUrl] = await Promise.all([
+    localImageData("/images/hsa-logo.png", "image/png"),
+    localImageData("/images/dr-ayda-soltanzadeh.jpg", "image/jpeg"),
+  ]);
+
   return buildReportPdf({
     clinicName: CLINIC.name,
     treatmentName: "Endomax Lift",
     byline: CLINIC.byline,
-    mono: "H S A",
+    logoDataUrl,
+    doctorPhotoDataUrl,
+    doctorName: CONSULTANT.name,
+    doctorRole: CONSULTANT.role,
+    doctorProfile: CONSULTANT.profile,
+    calculatorUrl: `${SITE_URL.replace(/\/$/, "")}/offer#finance`,
     palette: {
-      bg: [9, 9, 9],
-      panel: [22, 19, 15],
-      gold: [212, 175, 55],
-      goldLt: [231, 198, 104],
-      heading: [245, 241, 230],
-      body: [198, 191, 178],
-      faint: [138, 132, 122],
-      line: [62, 57, 48],
-      badgeText: [9, 9, 9],
+      bg: [248, 244, 236],
+      panel: [238, 228, 209],
+      gold: [165, 126, 55],
+      goldLt: [186, 145, 73],
+      heading: [47, 38, 27],
+      body: [83, 71, 56],
+      faint: [115, 98, 75],
+      line: [205, 187, 155],
+      badgeText: [255, 250, 239],
     },
     phone: CLINIC.phone,
     email: CLINIC.email,
-    bookingUrl: BOOKING_URL.replace(/^https?:\/\//, ""),
+    bookingUrl: BOOKING_URL,
     addressLines: [...CLINIC.addressLines],
     preparedFor: lead?.firstName?.trim() || undefined,
     dateStr,
@@ -207,8 +249,17 @@ export async function generateReportPdf(opts: {
     faceImageDataUrl,
     faceImageAspect,
     areas,
+    profile: profileEntries(result),
     priceFrom: PRICE_GUIDE.from,
     priceNote: PRICE_GUIDE.note,
     disclaimer: DISCLAIMER,
   });
+}
+
+function profileEntries(result: AnalyzeResult): ReportProfileEntry[] {
+  const { jowls, neck } = lowerFaceProfile(result);
+  return [
+    ...(jowls ? [{ label: "Jawline & jowls", ...jowls, fitLabel: FIT_LABEL[jowls.fit] }] : []),
+    ...(neck ? [{ label: "Neck & under-chin", ...neck, fitLabel: FIT_LABEL[neck.fit] }] : []),
+  ];
 }

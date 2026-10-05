@@ -55,6 +55,27 @@ body {
   font-family: var(--font-sans);
 }
 
+/* The assessment journey shares one warm editorial palette. Dark inset report
+   panels opt back into light text without affecting the rest of the app. */
+.journey-light {
+  --color-cream: #f5efe3 !important;
+  --color-cream-deep: #ecdfc9 !important;
+  --color-heading: #302719 !important;
+  --color-body: #625648 !important;
+  --color-ink: #211b13 !important;
+  --color-sage: #a99c84 !important;
+  --color-sage-deep: #8b795c !important;
+  background: #f5efe3;
+  color: #625648;
+}
+
+.journey-light .report-dark {
+  --color-heading: #fff8eb !important;
+  --color-body: #d7cbb9 !important;
+  --color-cream-deep: #30291f !important;
+  --color-ink: #211b13 !important;
+}
+
 h1,
 h2,
 h3,
@@ -79,6 +100,37 @@ h4 {
     rgba(7, 7, 7, 0) 40%,
     rgba(212, 175, 55, 0.08) 100%
   );
+}
+
+.contour-scene { perspective: 1000px; }
+.hero-atmosphere { animation: atmosphere-drift 24s ease-in-out infinite alternate; }
+.contour-light { animation: contour-light 12s ease-in-out infinite; }
+
+@keyframes atmosphere-drift {
+  from { transform: scale(1) translateX(-4px); }
+  to { transform: scale(1.035) translateX(8px); }
+}
+@keyframes contour-light {
+  0%, 55% { transform: translateX(0) rotate(12deg); }
+  90%, 100% { transform: translateX(500%) rotate(12deg); }
+}
+.cinematic-button { position: relative; overflow: hidden; isolation: isolate; }
+.cinematic-button::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: -100% auto -100% -60%;
+  width: 35%;
+  background: linear-gradient(90deg, transparent, #fff5d530, transparent);
+  transform: skewX(-20deg);
+  transition: left .65s var(--ease-cinematic);
+}
+.cinematic-button:hover::after,
+.cinematic-button:focus-visible::after { left: 130%; }
+.scan-indicator { animation: scan-indicator 2.4s ease-in-out infinite; }
+@keyframes scan-indicator {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(340%); }
 }
 
 @media (prefers-reduced-motion: reduce) {

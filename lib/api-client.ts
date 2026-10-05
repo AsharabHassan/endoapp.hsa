@@ -30,15 +30,18 @@ export async function requestAnalysis(
 }
 
 /** Fire the lead to GoHighLevel. Never throws — lead delivery must not block. */
-export async function submitLead(body: LeadRequest): Promise<void> {
+export async function submitLead(body: LeadRequest): Promise<boolean> {
   try {
-    await fetch("/api/lead", {
+    const response = await fetch("/api/lead", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
+    if (!response.ok) return false;
+    const delivery = await response.json();
+    return delivery.delivered === true;
   } catch {
-    /* swallowed: server-side retry + logging owns reliability */
+    return false;
   }
 }
 

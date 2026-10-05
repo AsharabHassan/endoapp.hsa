@@ -29,8 +29,8 @@ export function ConsentCheckbox({
       className={cn(
         "flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition",
         checked
-          ? "border-peach/60 bg-peach/15"
-          : "border-white/10 bg-white/[0.04] hover:border-peach/35",
+          ? "border-[#a98543] bg-[#f2e4c9]"
+          : "border-[#d9c8a7] bg-[#fffaf0] hover:border-[#af8e57]",
         className,
       )}
     >
@@ -47,15 +47,15 @@ export function ConsentCheckbox({
           className={cn(
             "flex h-5 w-5 items-center justify-center rounded-md border transition",
             checked
-              ? "border-peach bg-peach text-ink"
-              : "border-white/25 bg-white/[0.06]",
+              ? "border-[#a98543] bg-[#b79351] text-[#241b11]"
+              : "border-[#b9a580] bg-white",
             "peer-focus-visible:ring-2 peer-focus-visible:ring-peach-deep peer-focus-visible:ring-offset-1",
           )}
         >
           {checked && <Check size={14} strokeWidth={3} />}
         </span>
       </span>
-      <span className="text-sm leading-relaxed text-body">{children}</span>
+      <span className="text-sm leading-relaxed text-[#5d5040]">{children}</span>
     </label>
   );
 }

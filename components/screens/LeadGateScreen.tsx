@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import { Lock, Sparkles, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,7 @@ export function LeadGateScreen() {
   const [marketing, setMarketing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const metaEventId = useRef<string | null>(null);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -73,12 +74,11 @@ export function LeadGateScreen() {
       });
       setResult(result);
     }
-    await submitLead({ lead, result });
-    // Meta conversion: a qualified lead was captured.
-    trackMetaEvent("Lead", {
-      content_name: "Endomax Lift Suitability",
-      content_category: result.bucket,
-    });
+    const eventId = metaEventId.current ?? crypto.randomUUID();
+    metaEventId.current = eventId;
+    const delivered = await submitLead({ lead, result, metaEventId: eventId });
+    // Record confirmed delivery only; never send assessment findings to Meta.
+    if (delivered) trackMetaEvent("Lead", undefined, eventId);
     // Generate the report PDF and deliver it to GoHighLevel (upload + attach to
     // the contact + email the client). Fire-and-forget so the reveal isn't
     // delayed; it no-ops if the GHL integration env isn't configured.
@@ -93,22 +93,22 @@ export function LeadGateScreen() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-md px-6 py-10">
+    <div className="mx-auto w-full max-w-xl px-5 py-12 sm:px-8 md:py-16">
       <motion.div
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="rounded-[2rem] border border-peach/30 bg-white/[0.04] p-7 shadow-soft backdrop-blur"
+        className="rounded-[2rem] border border-[#d5bd91] bg-[#fffaf1]/95 p-6 shadow-[0_30px_75px_-45px_rgba(92,62,17,.55)] backdrop-blur sm:p-9"
       >
-        <span className="inline-flex items-center gap-2 rounded-full border border-peach/30 bg-peach/10 px-3 py-1 text-xs font-semibold text-peach">
-          <Sparkles size={13} /> Your guide is ready
+        <span className="inline-flex items-center gap-2 rounded-full border border-[#c7ab75] bg-[#f3e7cf] px-3 py-1 text-[11px] font-bold uppercase tracking-[.15em] text-[#8f6e34]">
+          <Sparkles size={13} /> 03 / Your guide is ready
         </span>
-        <h2 className="mt-4 font-serif text-[30px] leading-tight text-heading">
-          Where shall we send your result?
+        <h2 className="mt-5 font-serif text-[clamp(2.2rem,5vw,3.2rem)] leading-[1.08] !text-[#302719]">
+          Your guide is ready to read.
         </h2>
-        <p className="mt-2 text-sm text-body">
-          See your personalised Endomax Lift suitability guide and we&rsquo;ll
-          keep a copy for your free consultation.
+        <p className="mt-3 text-sm leading-relaxed text-[#665846]">
+          Enter your details to see the guide. We&rsquo;ll send a report copy for
+          your records and keep one for your consultation with Dr Ayda.
         </p>
 
         <form onSubmit={submit} className="mt-6 space-y-4">
@@ -142,13 +142,13 @@ export function LeadGateScreen() {
           />
 
           <ConsentCheckbox checked={marketing} onChange={setMarketing}>
-            I&rsquo;m happy for Harley Street Aesthetics to contact me about my
-            result and relevant offers. Optional — you&rsquo;ll see your result
-            either way.
+            I agree to receive relevant treatment news and offers from Harley
+            Street Aesthetics. Optional — my report and appointment information
+            are sent either way.
           </ConsentCheckbox>
 
           {error && (
-            <p className="rounded-xl border border-peach/30 bg-peach/15 px-4 py-2.5 text-sm text-heading">
+            <p className="rounded-xl border border-[#c29862] bg-[#f4e4c9] px-4 py-2.5 text-sm text-[#52391e]">
               {error}
             </p>
           )}
@@ -164,8 +164,8 @@ export function LeadGateScreen() {
             )}
           </Button>
 
-          <p className="flex items-center justify-center gap-1.5 text-xs text-body/55">
-            <Lock size={12} /> We respect your privacy. No spam.
+          <p className="flex items-center justify-center gap-1.5 text-xs text-[#776850]">
+            <Lock size={12} /> Marketing messages are optional.
           </p>
         </form>
       </motion.div>

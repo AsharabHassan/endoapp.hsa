@@ -3,28 +3,41 @@
 import { CalendarHeart, Phone, MessageCircle, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OFFER, BOOKING_URL, CLINIC } from "@/lib/constants";
+import type { Lead } from "@/lib/types";
+import { prefillBookingUrl } from "@/lib/booking";
+import { trackBookingStarted } from "@/lib/meta-pixel";
 
 /**
  * Booking section body. Two modes:
  *
- * 1. When OFFER.calendarUrl is set (NEXT_PUBLIC_OFFER_CALENDAR_URL — a GHL
- *    booking-widget URL), the calendar is embedded directly in the page as a
+ * 1. When a calendar URL is supplied (the report uses BOOKING_URL),
+ *    the calendar is embedded directly in the page as a
  *    plain iframe. Deliberately no GHL form_embed.js helper: that script
  *    hides the iframe behind a postMessage handshake that can fail, leaving
  *    it permanently invisible (verified on the MEDfacials sister app).
  *
- * 2. While no calendar widget is configured (HSA's current state), a booking
+ * 2. When no calendar widget is configured for the offer page, a booking
  *    panel with the booking site, both clinics' phone lines and WhatsApp.
  */
-export function BookingCalendar() {
-  if (OFFER.calendarUrl) {
+export function BookingCalendar({ calendarUrl = OFFER.calendarUrl, lead }: { calendarUrl?: string; lead?: Lead | null }) {
+  if (calendarUrl) {
+    const bookingUrl = prefillBookingUrl(calendarUrl, lead);
     return (
       <div>
+        <p className="mb-4 text-center text-sm text-body/80">
+          Calendar not showing?{" "}
+          <a href={bookingUrl} target="_blank" rel="noopener noreferrer" onClick={trackBookingStarted}
+            className="inline-flex min-h-11 items-center gap-1.5 font-semibold text-peach underline underline-offset-4">
+            Open the calendar in a new tab <ExternalLink size={14} />
+          </a>
+        </p>
         <div className="overflow-hidden rounded-2xl border border-peach/20 bg-white shadow-soft">
           <iframe
-            src={OFFER.calendarUrl}
-            title="Book your free Endomax Lift consultation"
+            src={bookingUrl}
+            title="Book your free Endomax Lift online consultation with Dr Ayda"
             id="endomax-consult-calendar"
+            referrerPolicy="no-referrer"
+            loading="eager"
             className="block h-[1120px] w-full border-0 max-sm:h-[980px]"
           />
         </div>
@@ -35,29 +48,20 @@ export function BookingCalendar() {
           >
             <Phone size={14} /> Or call us on {CLINIC.phone}
           </a>
-          <a
-            href={OFFER.calendarUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 font-medium text-peach transition hover:text-peach-light"
-          >
-            <ExternalLink size={14} /> Open the calendar in a new tab
-          </a>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl border border-peach/20 bg-white/[0.04] px-6 py-10 text-center shadow-soft sm:px-10">
+    <div className="rounded-[2rem] border border-[#d6c19b] bg-[#fffaf1] px-6 py-10 text-center shadow-[0_25px_65px_-40px_rgba(87,57,15,.5)] sm:px-10">
       <CalendarHeart size={28} className="mx-auto text-peach" />
       <h3 className="mt-4 font-serif text-2xl text-heading">
-        Reserve your free consultation
+        Reserve your free online consultation
       </h3>
       <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-body/80">
-        Choose a time that suits you at our London or Glasgow clinic — or start
-        with a quick call or WhatsApp message and we&apos;ll arrange it for
-        you.
+        Choose a time for your 15-minute online conversation with Dr Ayda.
+        If you prefer a phone call, contact the clinic after booking.
       </p>
 
       <a
@@ -67,7 +71,7 @@ export function BookingCalendar() {
         className="mt-6 inline-block"
       >
         <Button size="lg">
-          <CalendarHeart size={18} /> Book your free consultation
+          <CalendarHeart size={18} /> Book your free online consultation
         </Button>
       </a>
 
@@ -75,7 +79,7 @@ export function BookingCalendar() {
         {CLINIC.locations.map((loc) => (
           <div
             key={loc.city}
-            className="rounded-xl border border-peach/15 bg-white/[0.03] p-4"
+            className="rounded-xl border border-[#ddcaa7] bg-[#f7efdf] p-4"
           >
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-peach">
               {loc.city}

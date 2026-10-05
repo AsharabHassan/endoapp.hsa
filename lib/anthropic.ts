@@ -1,11 +1,14 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
-import type { Bucket, PhotoAssessment } from "./types";
+import type { Bucket, FocusFinding, PhotoAssessment } from "./types";
 import { serverEnv } from "./env";
 import { SYSTEM_ENDOLIFT } from "./prompts/system-endolift";
 import { RESULT_SCHEMA } from "./prompts/result-schema";
 import { toRegionKey } from "./face-regions";
 import type { MediaType } from "@/store/wizard-store";
+import { FOCUS_FINDINGS as FINDING_CODES, parseAreaObservations } from "./focus-findings";
+import { endoliftNote, skinScanEndolift } from "./skinscan";
+import { isJowlGrade, isNeckType } from "./lower-face-profile";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Server-only Claude Vision call. The system prompt is sent as a cached prefix;
@@ -20,6 +23,7 @@ const MAP: Record<string, Bucket> = {
   consultation: "consultation",
   alternative: "alternative",
 };
+const FOCUS_FINDINGS = new Set<FocusFinding>(FINDING_CODES);
 
 let client: Anthropic | null = null;
 function getClient(): Anthropic {
@@ -32,10 +36,12 @@ export async function assessPhoto(params: {
   imageMediaType: MediaType;
 }): Promise<PhotoAssessment> {
   const env = serverEnv();
+  // The clinic's own model reads the photo first; its signals go to Claude.
+  const scan = await skinScanEndolift(params.imageBase64);
 
   const message = await getClient().messages.create({
     model: env.ANTHROPIC_MODEL,
-    max_tokens: 700,
+    max_tokens: 1600,
     thinking: { type: "disabled" },
     system: [
       {
@@ -64,6 +70,7 @@ export async function assessPhoto(params: {
             type: "text",
             text: "Assess this selfie and produce the personalised Endomax Lift result as the structured fields.",
           },
+          ...(scan ? [{ type: "text" as const, text: endoliftNote(scan) }] : []),
         ],
       },
     ],
@@ -79,6 +86,10 @@ export async function assessPhoto(params: {
     lowerFaceObscured: boolean;
     areaEnhancements: { area: string; enhancementPercent: number }[];
     framingAdequate: boolean;
+    focusFindings: string[];
+    areaObservations: unknown;
+    jowlGrade: unknown;
+    neckType: unknown;
     headline: string;
     narrative: string;
     observedAreas: string[];
@@ -126,6 +137,13 @@ export async function assessPhoto(params: {
     lowerFaceObscured: raw.lowerFaceObscured === true,
     areaEnhancements,
     framingAdequate: raw.framingAdequate !== false,
+    focusFindings: raw.framingAdequate === false || raw.lowerFaceObscured === true ? [] :
+      [...new Set(Array.isArray(raw.focusFindings) ? raw.focusFindings : [])]
+        .filter((finding): finding is FocusFinding => FOCUS_FINDINGS.has(finding as FocusFinding))
+        .slice(0, 3),
+    areaObservations: raw.framingAdequate === false || raw.lowerFaceObscured === true ? [] : parseAreaObservations(raw.areaObservations),
+    jowlGrade: isJowlGrade(raw.jowlGrade) ? raw.jowlGrade : "unclear",
+    neckType: isNeckType(raw.neckType) ? raw.neckType : "unclear",
     narrative: {
       headline: raw.headline,
       narrative: raw.narrative,

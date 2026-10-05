@@ -14,7 +14,7 @@ import { useReducedMotion } from "motion/react";
  */
 export function useLightFx(): boolean {
   const reduce = useReducedMotion();
-  const [constrained, setConstrained] = useState(false);
+  const [constrained, setConstrained] = useState(true);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px), (pointer: coarse)");

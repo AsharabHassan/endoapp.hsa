@@ -8,7 +8,7 @@ type Variant = "primary" | "sage" | "ghost" | "outline";
 type Size = "md" | "lg";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-full font-medium tracking-tight " +
+  "cinematic-button inline-flex items-center justify-center gap-2 rounded-full font-medium tracking-tight " +
   "transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 " +
   "focus-visible:ring-offset-2 focus-visible:ring-offset-cream focus-visible:ring-peach-deep " +
   "disabled:opacity-50 disabled:pointer-events-none select-none";

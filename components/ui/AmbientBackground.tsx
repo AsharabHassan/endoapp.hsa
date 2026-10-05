@@ -12,8 +12,16 @@ import { useLightFx } from "@/lib/use-light-fx";
  * dropped, and the blur radius is dialed down — the continuous large-blur
  * compositing is what makes mobile feel glitchy.
  */
-export function AmbientBackground() {
+export function AmbientBackground({ tone = "dark" }: { tone?: "dark" | "warm" }) {
   const reduce = useLightFx();
+
+  if (tone === "warm") return (
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#f5efe3]">
+      <div className="absolute -left-[18%] top-[5%] h-[45vw] w-[45vw] rounded-full bg-[#d9bb82]/20 blur-[85px]" />
+      <div className="absolute -right-[12%] bottom-[8%] h-[42vw] w-[42vw] rounded-full bg-[#e8cfa0]/25 blur-[95px]" />
+      <div className="absolute inset-0 opacity-[.08]" style={{ backgroundImage: "linear-gradient(90deg, transparent 0, transparent calc(50% - .5px), #ae905d 50%, transparent calc(50% + .5px))", backgroundSize: "88px 100%" }} />
+    </div>
+  );
 
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">

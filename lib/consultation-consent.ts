@@ -13,7 +13,7 @@ import { CLINIC } from "./constants";
 export const CONSULTATION_CONTACT_CONSENT_VERSION = "consultation-contact-v1";
 
 /** How quickly the clinic promises the first call (shown to the client). */
-export const CALLBACK_PROMISE = "within 1 working day";
+export const CALLBACK_PROMISE = "within minutes";
 
 export const CONSENT_HEADLINE = "I’m requesting a free consultation.";
 

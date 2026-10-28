@@ -30,6 +30,33 @@ const result: AnalyzeResult = {
 };
 
 describe("buildGhlPayload", () => {
+  it("records the consultation call request as evidence and tags the contact", () => {
+    const p = buildGhlPayload(lead, result, "2026-06-04T10:00:00.000Z", {
+      consultationContact: {
+        at: "2026-06-04T09:50:00.000Z",
+        statement: "I’m requesting a free consultation. Please call, text or WhatsApp me…",
+        version: "consultation-contact-v1",
+      },
+      preferredCallTime: "evening",
+    });
+    expect(p).toMatchObject({
+      consultationContactConsent: true,
+      consultationContactConsentAt: "2026-06-04T09:50:00.000Z",
+      consultationContactConsentVersion: "consultation-contact-v1",
+      preferredCallTime: "evening",
+    });
+    expect(p.tags).toEqual(
+      expect.arrayContaining(["hsa-consultation-call-requested", "hsa-call-evening"]),
+    );
+    // Kept apart from marketing consent: the call request never implies it.
+    expect(buildGhlPayload({ ...lead, marketingConsent: false }, result, "t", {
+      consultationContact: { at: "t", statement: "s", version: "v" },
+    }).marketingConsent).toBe(false);
+    const without = buildGhlPayload(lead, result, "t");
+    expect(without.consultationContactConsent).toBe(false);
+    expect(without.tags).not.toContain("hsa-consultation-call-requested");
+  });
+
   it("maps contact fields", () => {
     const p = buildGhlPayload(lead, result, "2026-06-04T10:00:00.000Z");
     expect(p.firstName).toBe("Jane");

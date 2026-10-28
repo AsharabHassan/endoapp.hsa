@@ -96,7 +96,7 @@ export function ScanScreen() {
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col items-center px-6 py-12 text-center">
       <p className="text-[11px] font-bold uppercase tracking-[.22em] text-[#9a773e]">
-        02 / Preparing your guide
+        Step 1 of 4 · Preparing your guide
       </p>
       <h2 className="mt-4 text-center font-serif text-[clamp(2.4rem,5vw,4rem)] leading-tight !text-[#302719]">
         A closer look at your photo

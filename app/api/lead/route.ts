@@ -4,6 +4,7 @@ import { serverEnv } from "@/lib/env";
 import { after } from "next/server";
 import { createHash } from "node:crypto";
 import { normalizePhone, sendWebsiteLead } from "@/lib/meta-conversions";
+import { readConsultationRequest } from "@/lib/consultation-consent";
 
 export const runtime = "nodejs";
 
@@ -42,10 +43,13 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json({ ok: false, error: "missing fields" }, { status: 400 });
   }
 
+  const submittedAt = new Date().toISOString();
   const payload = { ...buildGhlPayload(
     body.lead,
     body.result,
-    new Date().toISOString(),
+    submittedAt,
+    // "I'm requesting a free consultation" — ticked before the scan.
+    readConsultationRequest(body as unknown as Record<string, unknown>, submittedAt),
   ),
     meta_pixel_id: process.env.NEXT_PUBLIC_META_PIXEL_ID || "",
     meta_event_name: "Lead",

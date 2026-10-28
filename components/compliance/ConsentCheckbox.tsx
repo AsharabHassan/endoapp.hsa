@@ -9,18 +9,21 @@ export interface ConsentCheckboxProps {
   onChange: (checked: boolean) => void;
   children: React.ReactNode;
   className?: string;
+  /** Highlight an unticked, required box after the client tried to continue. */
+  invalid?: boolean;
 }
 
 /**
  * Explicit, unchecked-by-default consent control. Used independently for the
- * face-image-processing consent and the (separate) marketing consent so neither
- * is bundled with the other.
+ * face-image-processing consent, the consultation call request and the
+ * (separate) marketing consent so none is bundled with another.
  */
 export function ConsentCheckbox({
   checked,
   onChange,
   children,
   className,
+  invalid,
 }: ConsentCheckboxProps) {
   const id = React.useId();
   return (
@@ -30,7 +33,9 @@ export function ConsentCheckbox({
         "flex cursor-pointer items-start gap-3 rounded-2xl border p-4 transition",
         checked
           ? "border-[#a98543] bg-[#f2e4c9]"
-          : "border-[#d9c8a7] bg-[#fffaf0] hover:border-[#af8e57]",
+          : invalid
+            ? "border-[#a98543] bg-[#fffaf0] ring-2 ring-[#c9a564]/60"
+            : "border-[#d9c8a7] bg-[#fffaf0] hover:border-[#af8e57]",
         className,
       )}
     >
@@ -40,6 +45,7 @@ export function ConsentCheckbox({
           type="checkbox"
           checked={checked}
           onChange={(e) => onChange(e.target.checked)}
+          aria-invalid={invalid && !checked ? true : undefined}
           className="peer sr-only"
         />
         <span

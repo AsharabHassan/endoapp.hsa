@@ -46,11 +46,24 @@ describe("wizard-store transitions", () => {
     s().setImageConsent(true);
     s().setImage("b64", "image/jpeg");
     s().beginScan();
+    expect(s().step).toBe("consent"); // blocked: no consultation request yet
+
+    s().setContactConsent(true);
+    expect(s().contactConsentAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    s().beginScan();
     expect(s().step).toBe("scan");
+  });
+
+  it("unticking the consultation request clears its timestamp", () => {
+    s().setContactConsent(true);
+    s().setContactConsent(false);
+    expect(s().contactConsent).toBe(false);
+    expect(s().contactConsentAt).toBeNull();
   });
 
   it("completeScan() moves from scan straight to the lead gate", () => {
     s().setImageConsent(true);
+    s().setContactConsent(true);
     s().setImage("b64", "image/jpeg");
     s().beginScan();
     s().completeScan();
@@ -95,6 +108,8 @@ describe("wizard-store result gating", () => {
 describe("wizard-store reset", () => {
   it("reset() returns to the initial state", () => {
     s().setImageConsent(true);
+    s().setContactConsent(true);
+    s().setCallTime("evening");
     s().setImage("b64", "image/jpeg");
     s().setLead(lead);
     s().reset();
@@ -102,5 +117,7 @@ describe("wizard-store reset", () => {
     expect(s().imageBase64).toBeNull();
     expect(s().lead).toBeNull();
     expect(s().imageConsent).toBe(false);
+    expect(s().contactConsent).toBe(false);
+    expect(s().callTime).toBeNull();
   });
 });

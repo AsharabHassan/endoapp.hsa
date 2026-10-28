@@ -18,5 +18,10 @@ describe("result screen runtime", () => {
     expect(html).toContain('href="#consultation"');
     expect(html).toContain('id="endomax-consult-calendar"');
     expect(html).toContain("first_name=Preview");
+    // Journey framing: the guide is step 2 of 4, the consultation comes next.
+    expect(html).toContain("Step 2 of 4 complete");
+    expect(html).toContain("Book my free consultation");
+    // The booking calendar sits above the finance block.
+    expect(html.indexOf('id="consultation"')).toBeLessThan(html.indexOf('id="finance"'));
   });
 });

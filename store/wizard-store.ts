@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { AnalyzeResult, Lead } from "@/lib/types";
 import type { NormalizedPoint } from "@/components/scan/useFaceLandmarker";
+import type { CallTimeKey } from "@/lib/consultation-consent";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // The wizard is a small, explicit state machine: hero → consent → scan → lead →
@@ -17,6 +18,10 @@ export type MediaType = "image/jpeg" | "image/png" | "image/webp";
 interface WizardState {
   step: Step;
   imageConsent: boolean;
+  /** The client asked us to call/text/WhatsApp them about their consultation. */
+  contactConsent: boolean;
+  contactConsentAt: string | null;
+  callTime: CallTimeKey | null;
   imageBase64: string | null;
   imageMediaType: MediaType;
   landmarks: NormalizedPoint[] | null;
@@ -27,6 +32,8 @@ interface WizardState {
   // transitions
   start: () => void;
   setImageConsent: (v: boolean) => void;
+  setContactConsent: (v: boolean) => void;
+  setCallTime: (t: CallTimeKey | null) => void;
   setImage: (base64: string, mediaType: MediaType) => void;
   setLandmarks: (pts: NormalizedPoint[] | null) => void;
   beginScan: () => void;
@@ -45,6 +52,9 @@ interface WizardState {
 const initial = {
   step: "hero" as Step,
   imageConsent: false,
+  contactConsent: false,
+  contactConsentAt: null as string | null,
+  callTime: null as CallTimeKey | null,
   imageBase64: null as string | null,
   imageMediaType: "image/jpeg" as MediaType,
   landmarks: null as NormalizedPoint[] | null,
@@ -60,14 +70,20 @@ export const useWizard = create<WizardState>((set, get) => ({
 
   setImageConsent: (v) => set({ imageConsent: v }),
 
+  setContactConsent: (v) =>
+    set({ contactConsent: v, contactConsentAt: v ? new Date().toISOString() : null }),
+
+  setCallTime: (callTime) => set({ callTime }),
+
   setImage: (base64, mediaType) =>
     set({ imageBase64: base64, imageMediaType: mediaType }),
 
   setLandmarks: (landmarks) => set({ landmarks }),
 
   beginScan: () => {
-    const { imageConsent, imageBase64 } = get();
-    if (!imageConsent || !imageBase64) return; // blocked
+    const { imageConsent, contactConsent, imageBase64 } = get();
+    // The paid analysis only runs for clients who asked for a consultation.
+    if (!imageConsent || !contactConsent || !imageBase64) return; // blocked
     set({ step: "scan" });
   },
 

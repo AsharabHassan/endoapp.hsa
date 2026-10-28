@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/button";
 import { ConsentCheckbox } from "@/components/compliance/ConsentCheckbox";
+import { ConsultationRequest } from "@/components/compliance/ConsultationRequest";
 import { DisclaimerBanner } from "@/components/compliance/DisclaimerBanner";
 import { CameraCapture } from "@/components/scan/CameraCapture";
 import { PhotoGuide } from "@/components/scan/PhotoGuide";
@@ -15,12 +16,25 @@ import { fileToDownscaledImage } from "@/lib/image";
 export function ConsentCaptureScreen() {
   const imageConsent = useWizard((s) => s.imageConsent);
   const setImageConsent = useWizard((s) => s.setImageConsent);
+  const contactConsent = useWizard((s) => s.contactConsent);
+  const setContactConsent = useWizard((s) => s.setContactConsent);
+  const [needsContact, setNeedsContact] = useState(false);
   const setImage = useWizard((s) => s.setImage);
   const beginScan = useWizard((s) => s.beginScan);
 
   const [mode, setMode] = useState<"choose" | "camera">("choose");
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  /** The scan is only for clients who asked for a consultation. */
+  function requireContactConsent(): boolean {
+    if (contactConsent) return true;
+    setNeedsContact(true);
+    document
+      .getElementById("consultation-request")
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    return false;
+  }
 
   function handleCapture(base64: string, mediaType: MediaType) {
     setImage(base64, mediaType);
@@ -54,7 +68,7 @@ export function ConsentCaptureScreen() {
   return (
     <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-10 sm:px-8 md:grid-cols-[.8fr_1.2fr] md:items-start md:gap-12 md:py-16">
       <Reveal className="md:sticky md:top-28">
-        <p className="text-[11px] font-bold uppercase tracking-[.22em] text-[#9a773e]">01 / Your photograph</p>
+        <p className="text-[11px] font-bold uppercase tracking-[.22em] text-[#9a773e]">Step 1 of 4 · Your photo scan</p>
         <h2 className="mt-4 font-serif text-[clamp(2.5rem,5vw,4.2rem)] leading-[1.05] !text-[#302719]">A thoughtful<br /><em className="font-normal text-[#9a773e]">first look.</em></h2>
         <p className="mt-5 max-w-md text-sm leading-[1.8] text-[#645746]">A clear selfie helps us prepare a personal guide to areas you may wish to discuss with Dr Ayda.</p>
         <div className="relative mt-7 hidden aspect-[4/3] overflow-hidden rounded-[2rem] border border-[#d2bf99] shadow-[0_20px_50px_-30px_rgba(84,58,17,.5)] md:block"><Image src="/visuals/gold-face-contour.png" alt="" fill sizes="400px" className="object-cover object-[center_34%]" /></div>
@@ -75,6 +89,15 @@ export function ConsentCaptureScreen() {
         </div>
       ) : (
         <div className="mt-6 space-y-5">
+          <ConsultationRequest
+            checked={contactConsent}
+            onChange={(v) => {
+              setContactConsent(v);
+              if (v) setNeedsContact(false);
+            }}
+            invalid={needsContact}
+          />
+
           <PhotoGuide />
 
           <ConsentCheckbox checked={imageConsent} onChange={setImageConsent}>
@@ -97,7 +120,10 @@ export function ConsentCaptureScreen() {
               size="lg"
               className="flex-1"
               disabled={!imageConsent}
-              onClick={() => setMode("camera")}
+              onClick={() => {
+                if (!requireContactConsent()) return;
+                setMode("camera");
+              }}
             >
               <Camera size={18} /> Use camera
             </Button>
@@ -106,7 +132,10 @@ export function ConsentCaptureScreen() {
               size="lg"
               className="flex-1"
               disabled={!imageConsent}
-              onClick={() => fileRef.current?.click()}
+              onClick={() => {
+                if (!requireContactConsent()) return;
+                fileRef.current?.click();
+              }}
             >
               <Upload size={18} /> Upload photo
             </Button>

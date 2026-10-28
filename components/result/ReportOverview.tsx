@@ -5,6 +5,7 @@ import { regionMarkers } from "@/lib/face-regions";
 import { FocusReasons } from "./FocusReasons";
 import { LowerFaceProfile } from "./LowerFaceProfile";
 import { BookingCTA } from "./BookingCTA";
+import { NextStepCard } from "./NextStepCard";
 
 export function ReportOverview() {
   const { result, imageBase64, imageMediaType, landmarks } = useWizard();
@@ -21,6 +22,7 @@ export function ReportOverview() {
       </div>
       <div className="hidden shrink-0 lg:block"><BookingCTA tone="light" embedded /></div>
     </div>
+    <NextStepCard />
     <LowerFaceProfile result={result} />
     <div className="grid items-start gap-7 md:grid-cols-[.7fr_1.3fr] md:gap-10">
       <div className="md:sticky md:top-28">

@@ -2,12 +2,13 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, Camera, ShieldCheck, Video } from "lucide-react";
+import { ArrowRight, Camera, PhoneCall, ShieldCheck, Video } from "lucide-react";
 import { useWizard } from "@/store/wizard-store";
 import { EASE } from "@/lib/motion";
 import { useLightFx } from "@/lib/use-light-fx";
 import { ContourArtwork } from "@/components/ui/ContourArtwork";
 import { Reveal } from "@/components/ui/Reveal";
+import { JOURNEY } from "@/lib/consultation-journey";
 
 export function HeroScreen() {
   const start = useWizard((s) => s.start);
@@ -21,7 +22,7 @@ export function HeroScreen() {
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#f5ecdc]/95 via-[#f4ead9]/85 to-[#f4ead9]/25" />
       <div className="mx-auto grid min-h-[calc(100dvh-5rem)] max-w-6xl items-center gap-6 px-6 pb-10 pt-10 sm:px-10 sm:py-14 md:grid-cols-[1.15fr_.85fr] lg:gap-12 lg:px-12">
         <div className="relative z-10">
-          <Reveal><span className="inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[.24em] text-[#836329]"><span className="h-px w-8 bg-[#b08b50]" /> A considered first step</span></Reveal>
+          <Reveal><span className="inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[.24em] text-[#836329]"><span className="h-px w-8 bg-[#b08b50]" /> Step 1 of your free Endomax Lift consultation</span></Reveal>
           <h1 className="mt-6 font-serif text-[clamp(3.45rem,6.8vw,6.2rem)] leading-[1.05] tracking-[-.055em] !text-[#302719]">
             {["Your face.", "Your guide.", "Your choice."].map((line, i) => (
               <span key={line} className="block overflow-hidden pb-1">
@@ -35,13 +36,14 @@ export function HeroScreen() {
             ))}
           </h1>
           <Reveal delay={.12}>
-            <p className="mt-5 max-w-lg text-sm leading-[1.85] text-[#51473a] sm:text-base">Submit a selfie for a personalised Endomax Lift guide. See which areas may be worth discussing, then speak with Dr Ayda in a free 15-minute online consultation.</p>
+            <p className="mt-5 max-w-lg text-sm leading-[1.85] text-[#51473a] sm:text-base">A short photo scan prepares your personal pre-consultation guide. Our team then calls you to go through it and book your free 15-minute online consultation with Dr Ayda, where your suitability, treatment plan and price are confirmed.</p>
             <button onClick={start} className="cinematic-button group mt-7 inline-flex min-h-14 items-center justify-center gap-5 rounded-full bg-[#30271c] px-7 text-sm font-semibold text-[#fff9ef] shadow-[0_18px_40px_-19px_rgba(67,44,16,.75)] transition duration-300 hover:bg-[#6d5128] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9f7938]">
-              Begin with your selfie <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" />
+              Start my pre-consultation scan <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" />
             </button>
             <div className="mt-6 flex flex-wrap gap-x-4 gap-y-2 text-[11px] font-medium text-[#6b5a43]">
               <span className="inline-flex items-center gap-1.5"><Camera size={14} /> Camera or upload</span>
               <span className="inline-flex items-center gap-1.5"><ShieldCheck size={14} /> Private report</span>
+              <span className="inline-flex items-center gap-1.5"><PhoneCall size={14} /> A call from our team</span>
               <span className="inline-flex items-center gap-1.5"><Video size={14} /> Online consultation</span>
             </div>
           </Reveal>
@@ -52,11 +54,13 @@ export function HeroScreen() {
         </Reveal>
       </div>
       <div className="border-t border-[#b6955e]/30 bg-[#fff8ea]/40 px-6 py-5 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-5xl flex-wrap justify-between gap-x-5 gap-y-3 text-[10px] font-semibold uppercase tracking-[.15em] text-[#806a49] sm:text-xs">
-          <span><span className="mr-2 text-[#ac8c54]">01</span> Your selfie</span>
-          <span><span className="mr-2 text-[#ac8c54]">02</span> Your personal guide</span>
-          <span><span className="mr-2 text-[#ac8c54]">03</span> A conversation</span>
-        </div>
+        <ol aria-label="Your consultation journey" className="mx-auto grid max-w-5xl grid-cols-2 gap-x-5 gap-y-3 text-[10px] font-semibold uppercase tracking-[.15em] text-[#806a49] sm:flex sm:flex-wrap sm:justify-between sm:text-xs">
+          {JOURNEY.map((stage, i) => (
+            <li key={stage.key} className={i === 2 ? "text-[#4f3c1f]" : undefined}>
+              <span className="mr-2 text-[#ac8c54]">{String(i + 1).padStart(2, "0")}</span> {stage.label}
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );

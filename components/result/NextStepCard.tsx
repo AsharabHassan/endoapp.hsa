@@ -1,9 +1,8 @@
 "use client";
 
-import { CalendarHeart, Check, Lock, PhoneCall, UserPlus } from "lucide-react";
+import { CalendarHeart, Check, Lock, PhoneCall } from "lucide-react";
 import { JOURNEY } from "@/lib/consultation-journey";
-import { CLINIC } from "@/lib/constants";
-import { CALLBACK_PROMISE, clinicVCard } from "@/lib/consultation-consent";
+import { CALLBACK_PROMISE } from "@/lib/consultation-consent";
 import { openEmbeddedBooking } from "./BookingCTA";
 import { useWizard } from "@/store/wizard-store";
 import { lowerFaceProfile } from "@/lib/lower-face-profile";
@@ -102,17 +101,9 @@ export function NextStepCard() {
           <PhoneCall size={20} className="shrink-0 text-[#9f7938]" />
           <p className="flex-1 text-sm leading-relaxed text-[#625342]">
             <span className="font-semibold text-[#302719]">Expect our call {CALLBACK_PROMISE}</span>{" "}
-            from <span className="whitespace-nowrap font-semibold text-[#302719]">{CLINIC.phone}</span>{" "}
             &mdash; if you haven&rsquo;t booked yet, we&rsquo;ll go through your guide
             and find a time that suits you.
           </p>
-          <a
-            href={`data:text/vcard;charset=utf-8,${encodeURIComponent(clinicVCard())}`}
-            download={`${CLINIC.name}.vcf`}
-            className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#c9ab74] px-4 py-2 text-sm font-semibold text-[#302719] transition hover:bg-[#f3e7cf]"
-          >
-            <UserPlus size={15} /> Save our number
-          </a>
         </div>
       </div>
     </section>

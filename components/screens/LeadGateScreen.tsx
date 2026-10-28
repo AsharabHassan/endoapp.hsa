@@ -13,7 +13,6 @@ import {
   submitReportToGhl,
 } from "@/lib/api-client";
 import { trackMetaEvent } from "@/lib/meta-pixel";
-import { CLINIC } from "@/lib/constants";
 import {
   CALL_TIMES,
   CALLBACK_PROMISE,
@@ -170,8 +169,7 @@ export function LeadGateScreen() {
             <p className="mt-1.5 flex items-start gap-1.5 text-xs leading-relaxed text-[#665846]">
               <PhoneCall size={13} className="mt-0.5 shrink-0 text-[#9a773e]" />
               <span>
-                Our team will call you {CALLBACK_PROMISE} from{" "}
-                <span className="whitespace-nowrap font-semibold text-[#302719]">{CLINIC.phone}</span>{" "}
+                Our team will call you {CALLBACK_PROMISE}{" "}
                 to book your consultation with Dr Ayda.
               </span>
             </p>

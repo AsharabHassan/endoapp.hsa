@@ -2,7 +2,6 @@
 
 import { PhoneCall } from "lucide-react";
 import { ConsentCheckbox } from "@/components/compliance/ConsentCheckbox";
-import { CLINIC } from "@/lib/constants";
 import {
   CALLBACK_PROMISE,
   CONSENT_DETAIL,
@@ -57,8 +56,7 @@ export function ConsultationRequest({ checked, onChange, invalid }: Consultation
       </ol>
       <p className="mt-3 text-[13px] leading-relaxed text-[#645746]">
         This scan is the first step of your free consultation. Once your guide
-        is ready, a member of our team will call you {CALLBACK_PROMISE} from{" "}
-        <span className="whitespace-nowrap font-semibold text-[#302719]">{CLINIC.phone}</span>{" "}
+        is ready, a member of our team will call you {CALLBACK_PROMISE}{" "}
         to go through it and book your consultation with Dr Ayda.
       </p>
 

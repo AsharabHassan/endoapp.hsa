@@ -1,4 +1,3 @@
-import { CLINIC } from "./constants";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // The scan is a request for a free consultation, not a free AI toy. Before the
@@ -67,15 +66,3 @@ export function readConsultationRequest(
   return { consultationContact, preferredCallTime };
 }
 
-/** A downloadable contact card so our call doesn't arrive as an unknown number. */
-export function clinicVCard(): string {
-  const tel = CLINIC.phoneHref.replace(/^tel:/, "");
-  return [
-    "BEGIN:VCARD",
-    "VERSION:3.0",
-    `FN:${CLINIC.name}`,
-    `ORG:${CLINIC.name}`,
-    `TEL;TYPE=WORK,VOICE:${tel}`,
-    "END:VCARD",
-  ].join("\r\n");
-}

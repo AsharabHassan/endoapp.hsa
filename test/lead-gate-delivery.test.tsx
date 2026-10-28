@@ -50,7 +50,8 @@ describe("consultation call request", () => {
   it("sends the consent wording, time and preferred call time with the lead", async () => {
     useWizard.getState().setContactConsent(true);
     const button = fillLead();
-    expect(screen.getByText("020 4628 3165")).toBeInTheDocument();
+    expect(screen.getByText(/will call you within minutes/)).toBeInTheDocument();
+    expect(screen.queryByText(/0141 488 8985|020 4628 3165/)).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Afternoon" }));
     fireEvent.click(button);
     await waitFor(() => expect(mocks.submit).toHaveBeenCalledTimes(1));

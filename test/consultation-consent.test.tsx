@@ -3,7 +3,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ConsentCaptureScreen } from "@/components/screens/ConsentCaptureScreen";
 import { useWizard } from "@/store/wizard-store";
 import {
-  clinicVCard,
   CONSULTATION_CONTACT_STATEMENT,
   readConsultationRequest,
 } from "@/lib/consultation-consent";
@@ -49,13 +48,6 @@ describe("readConsultationRequest", () => {
   });
 });
 
-describe("clinicVCard", () => {
-  it("carries the clinic's main number", () => {
-    const card = clinicVCard();
-    expect(card).toContain("FN:Harley Street Aesthetics");
-    expect(card).toContain("TEL;TYPE=WORK,VOICE:+442046283165");
-  });
-});
 
 describe("consent screen gate", () => {
   beforeEach(() => {

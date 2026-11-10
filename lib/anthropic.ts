@@ -42,7 +42,9 @@ export async function assessPhoto(params: {
   const message = await getClient().messages.create({
     model: env.ANTHROPIC_MODEL,
     max_tokens: 1600,
-    thinking: { type: "disabled" },
+    // Sonnet 5.5 rejects { type: "disabled" }; "between_tools" is its thinking-off
+    // mode. SDK 0.100 predates the type, hence the cast.
+    thinking: { type: "between_tools" } as unknown as Anthropic.ThinkingConfigParam,
     system: [
       {
         type: "text",

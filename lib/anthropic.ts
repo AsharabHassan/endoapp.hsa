@@ -8,6 +8,7 @@ import { toRegionKey } from "./face-regions";
 import type { MediaType } from "@/store/wizard-store";
 import { FOCUS_FINDINGS as FINDING_CODES, parseAreaObservations } from "./focus-findings";
 import { endoliftNote, skinScanEndolift } from "./skinscan";
+import { reportAgreement } from "./skinscan-agreement";
 import { isJowlGrade, isNeckType } from "./lower-face-profile";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -133,7 +134,7 @@ export async function assessPhoto(params: {
     }
   }
 
-  return {
+  const result: PhotoAssessment = {
     suitability: bucket,
     score,
     lowerFaceObscured: raw.lowerFaceObscured === true,
@@ -153,4 +154,30 @@ export async function assessPhoto(params: {
       encouragement: raw.encouragement,
     },
   };
+
+  // SkinScan agreement log (no effect on the result): only for readable photos.
+  // SkinScan treats an area as a likely focus at >= 0.5.
+  if (scan && result.framingAdequate && !result.lowerFaceObscured) {
+    const areas = ["chin", "neck", "cheeks"] as const;
+    const scanAreas = areas.filter((a) => scan.focus[a] >= 0.5);
+    const claudeAreas = [...new Set((result.focusFindings ?? []).map(findingArea).filter((a): a is string => a !== null))];
+    const agree: Record<string, boolean> = {};
+    for (const a of areas) agree[`agree_${a}`] = scanAreas.includes(a) === claudeAreas.includes(a);
+    agree.agree_strong_candidate = (scan.strong_candidate >= 0.5) === (result.suitability === "great");
+    reportAgreement(
+      "endolift",
+      { focus: scan.focus, focusAreas: scanAreas, strong_candidate: scan.strong_candidate, version: scan.version },
+      { focusAreas: claudeAreas, strongCandidate: result.suitability === "great", jowlGrade: result.jowlGrade, neckType: result.neckType },
+      agree,
+    );
+  }
+  return result;
+}
+
+/** Claude's finding codes → SkinScan's focus areas (jawline has no SkinScan equivalent). */
+function findingArea(f: FocusFinding): string | null {
+  if (f === "under_chin_fullness") return "chin";
+  if (f.startsWith("neck_")) return "neck";
+  if (f === "mid_face_softening") return "cheeks";
+  return null;
 }

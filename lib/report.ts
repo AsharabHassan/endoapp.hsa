@@ -207,17 +207,13 @@ export async function generateReportPdf(opts: {
     year: "numeric",
   });
 
-  const [logoDataUrl, doctorPhotoDataUrl] = await Promise.all([
-    localImageData("/images/hsa-logo.png", "image/png"),
-    localImageData("/images/dr-ayda-soltanzadeh.jpg", "image/jpeg"),
-  ]);
+  const logoDataUrl = await localImageData("/images/hsa-logo.png", "image/png");
 
   return buildReportPdf({
     clinicName: CLINIC.name,
     treatmentName: "Endomax Lift",
     byline: CLINIC.byline,
     logoDataUrl,
-    doctorPhotoDataUrl,
     doctorName: CONSULTANT.name,
     doctorRole: CONSULTANT.role,
     doctorProfile: CONSULTANT.profile,

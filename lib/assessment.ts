@@ -39,9 +39,9 @@ export function buildResult(
       framingAdequate: false,
       narrative: {
         headline: "Your next step is a conversation",
-        narrative: "Your photo was received, but there isn't enough visible detail for a personalised photo guide. You can still discuss your goals and options with Dr Ayda without uploading another photo.",
+        narrative: "Your photo was received, but there isn't enough visible detail for a personalised photo guide. You can still discuss your goals and options with our doctor without uploading another photo.",
         observedAreas: [],
-        encouragement: "Book a free 15-minute online consultation. Dr Ayda can explain the next steps; a qualified practitioner confirms treatment suitability and safety.",
+        encouragement: "Book a free 15-minute online consultation. Our doctor can explain the next steps; a qualified practitioner confirms treatment suitability and safety.",
       },
     };
   }
@@ -73,9 +73,9 @@ export function genericFallbackResult(usedPhoto: boolean): AnalyzeResult {
     softFlagged: false,
     routedReason: "",
     narrative: {
-      headline: "Let's discuss your options with Dr Ayda",
+      headline: "Let's discuss your options with our doctor",
       narrative:
-        "We couldn't complete the photo analysis this time. You can still discuss your goals with Dr Ayda in a free 15-minute online consultation, with a phone call available if needed. You don't need to upload another photo to book.",
+        "We couldn't complete the photo analysis this time. You can still discuss your goals with our doctor in a free 15-minute online consultation, with a phone call available if needed. You don't need to upload another photo to book.",
       observedAreas: [],
       encouragement:
         "Book your free online consultation whenever you're ready. A qualified practitioner confirms treatment suitability and safety.",

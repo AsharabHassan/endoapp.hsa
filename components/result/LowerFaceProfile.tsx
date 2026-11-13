@@ -47,7 +47,7 @@ export function LowerFaceProfile({ result }: { result: AnalyzeResult }) {
         {neck && <Card label="Neck & under-chin" entry={neck} />}
       </div>
       <p className="mt-3 text-xs leading-relaxed text-[#786954]">
-        A visual guide from one photo — Dr Ayda confirms the type, and whether skin, fat or muscle is responsible, at your consultation.
+        A visual guide from one photo — our doctor confirms the type, and whether skin, fat or muscle is responsible, at your consultation.
       </p>
     </section>
   );

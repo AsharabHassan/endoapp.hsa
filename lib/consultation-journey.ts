@@ -2,7 +2,7 @@ import type { Step } from "@/store/wizard-store";
 
 /**
  * The client journey shown across the wizard. The AI guide is step 2 of 4, so
- * the result never reads as the end: the free consultation with Dr Ayda is the
+ * the result never reads as the end: the free consultation with our doctor is the
  * step that turns the guide into a real plan.
  */
 export const JOURNEY = [
@@ -16,13 +16,13 @@ export const JOURNEY = [
     key: "guide",
     label: "Pre-consultation guide",
     short: "Guide",
-    detail: "Your personal Endomax Lift guide, prepared for Dr Ayda.",
+    detail: "Your personal Endomax Lift guide, prepared for our doctor.",
   },
   {
     key: "consultation",
     label: "Free consultation",
     short: "Consultation",
-    detail: "We call you to book 15 minutes online with Dr Ayda.",
+    detail: "We call you to book 15 minutes online with our doctor.",
   },
   {
     key: "plan",

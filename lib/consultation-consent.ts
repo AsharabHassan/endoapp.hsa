@@ -18,7 +18,7 @@ export const CONSENT_HEADLINE = "I’m requesting a free consultation.";
 
 export const CONSENT_DETAIL =
   "Please call, text or WhatsApp me about my guide and to arrange my " +
-  "consultation with Dr Ayda.";
+  "consultation with our doctor.";
 
 /** The exact statement the client agrees to (also sent to the CRM). */
 export const CONSULTATION_CONTACT_STATEMENT = `${CONSENT_HEADLINE} ${CONSENT_DETAIL}`;

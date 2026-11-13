@@ -36,7 +36,7 @@ export function ReportOverview() {
           </div>
           <figcaption className="px-4 py-3 text-center text-xs font-medium text-[#69512d]">Your submitted selfie{findings.length > 0 && <> · {findings.map((item) => item.area).filter((a, i, all) => all.indexOf(a) === i).join(" / ")}</>}</figcaption>
         </figure>}
-        <div className="mx-auto mt-5 hidden max-w-sm md:block"><BookingCTA tone="light" embedded /><p className="mt-3 text-center text-xs leading-relaxed text-[#715b39]">15 minutes online with Dr Ayda · phone fallback</p></div>
+        <div className="mx-auto mt-5 hidden max-w-sm md:block"><BookingCTA tone="light" embedded /><p className="mt-3 text-center text-xs leading-relaxed text-[#715b39]">15 minutes online with our doctor · phone fallback</p></div>
         <p className="mx-auto mt-4 max-w-sm text-center text-xs leading-relaxed text-[#786954]">Photo observations guide the conversation. Your practitioner confirms the underlying cause, suitability and likely benefit.</p>
       </div>
       <div>

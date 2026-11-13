@@ -60,7 +60,7 @@ const EXPLANATIONS: Record<FocusFinding, Explanation> = {
     region: "neck", area: "Neck", pattern: "Vertical band-like contours",
     observation: "Vertical cord-like contours are visible in the neck area.",
     mechanism: "Endomax Lift works on skin and selected superficial tissue. If muscle activity creates these contours, skin tightening alone may have limited effect on the bands themselves.",
-    expectedChange: "Surrounding skin may improve when laxity is present. Dr Ayda needs to assess the neck at rest and in motion before recommending how to address the bands.",
+    expectedChange: "Surrounding skin may improve when laxity is present. Our doctor needs to assess the neck at rest and in motion before recommending how to address the bands.",
   },
   mid_face_softening: {
     region: "cheeks", area: "Mid-face and cheeks", pattern: "Softer cheek contour",

@@ -36,7 +36,7 @@ export function HeroScreen() {
             ))}
           </h1>
           <Reveal delay={.12}>
-            <p className="mt-5 max-w-lg text-sm leading-[1.85] text-[#51473a] sm:text-base">A short photo scan prepares your personal pre-consultation guide. Our team then calls you to go through it and book your free 15-minute online consultation with Dr Ayda, where your suitability, treatment plan and price are confirmed.</p>
+            <p className="mt-5 max-w-lg text-sm leading-[1.85] text-[#51473a] sm:text-base">A short photo scan prepares your personal pre-consultation guide. Our team then calls you to go through it and book your free 15-minute online consultation with our doctor, where your suitability, treatment plan and price are confirmed.</p>
             <button onClick={start} className="cinematic-button group mt-7 inline-flex min-h-14 items-center justify-center gap-5 rounded-full bg-[#30271c] px-7 text-sm font-semibold text-[#fff9ef] shadow-[0_18px_40px_-19px_rgba(67,44,16,.75)] transition duration-300 hover:bg-[#6d5128] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9f7938]">
               Start my pre-consultation scan <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" />
             </button>

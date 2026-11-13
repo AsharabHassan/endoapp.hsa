@@ -301,17 +301,17 @@ export const REGION_COPY: Record<RegionKey, { title: string; blurb: string }> = 
   cheeks: {
     title: "Your mid-face & cheeks",
     blurb:
-      "A softer cheek contour may be worth discussing. Dr Ayda can assess whether Endomax Lift or another approach is more appropriate.",
+      "A softer cheek contour may be worth discussing. Our doctor can assess whether Endomax Lift or another approach is more appropriate.",
   },
   jawline: {
     title: "Your jawline & jowls",
     blurb:
-      "This visible contour change is worth discussing. Endomax Lift may help some mild to moderate jawline softening; Dr Ayda will assess whether it fits your goals.",
+      "This visible contour change is worth discussing. Endomax Lift may help some mild to moderate jawline softening; our doctor will assess whether it fits your goals.",
   },
   chin: {
     title: "Your under-chin",
     blurb:
-      "A softer under-chin outline can have several causes. Dr Ayda can assess whether Endomax Lift is an appropriate option for this area.",
+      "A softer under-chin outline can have several causes. Our doctor can assess whether Endomax Lift is an appropriate option for this area.",
   },
   neck: {
     title: "Your neck",

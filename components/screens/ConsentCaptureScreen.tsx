@@ -70,7 +70,7 @@ export function ConsentCaptureScreen() {
       <Reveal className="md:sticky md:top-28">
         <p className="text-[11px] font-bold uppercase tracking-[.22em] text-[#9a773e]">Step 1 of 4 · Your photo scan</p>
         <h2 className="mt-4 font-serif text-[clamp(2.5rem,5vw,4.2rem)] leading-[1.05] !text-[#302719]">A thoughtful<br /><em className="font-normal text-[#9a773e]">first look.</em></h2>
-        <p className="mt-5 max-w-md text-sm leading-[1.8] text-[#645746]">A clear selfie helps us prepare a personal guide to areas you may wish to discuss with Dr Ayda.</p>
+        <p className="mt-5 max-w-md text-sm leading-[1.8] text-[#645746]">A clear selfie helps us prepare a personal guide to areas you may wish to discuss with our doctor.</p>
         <div className="relative mt-7 hidden aspect-[4/3] overflow-hidden rounded-[2rem] border border-[#d2bf99] shadow-[0_20px_50px_-30px_rgba(84,58,17,.5)] md:block"><Image src="/visuals/gold-face-contour.png" alt="" fill sizes="400px" className="object-cover object-[center_34%]" /></div>
       </Reveal>
       <Reveal delay={.1} className="rounded-[2rem] border border-[#d8c7a8] bg-[#fffaf1]/90 p-5 shadow-[0_28px_70px_-45px_rgba(93,64,23,.5)] sm:p-8">

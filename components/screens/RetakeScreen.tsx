@@ -35,7 +35,7 @@ export function RetakeScreen() {
         <p className="mt-3 text-[15px] leading-relaxed text-[#625648]">
           There isn&rsquo;t enough visible detail for a personalised photo guide.
           You can continue to a general guide and book your free online consultation
-          with Dr Ayda. Another photo is optional.
+          with our doctor. Another photo is optional.
         </p>
 
         <Button size="lg" onClick={() => goToStep("lead")} className="mt-8 w-full">

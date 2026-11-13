@@ -57,7 +57,7 @@ export function ConsultationRequest({ checked, onChange, invalid }: Consultation
       <p className="mt-3 text-[13px] leading-relaxed text-[#645746]">
         This scan is the first step of your free consultation. Once your guide
         is ready, a member of our team will call you {CALLBACK_PROMISE}{" "}
-        to go through it and book your consultation with Dr Ayda.
+        to go through it and book your consultation with our doctor.
       </p>
 
       <ConsentCheckbox checked={checked} onChange={onChange} invalid={invalid} className="mt-4">

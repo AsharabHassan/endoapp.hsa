@@ -38,7 +38,7 @@ export const RESULT_SCHEMA = {
     headline: { type: "string", description: "6–10 words naming the visible focus, without promising results." },
     narrative: { type: "string", description: "Two short sentences, up to 55 words: visible pattern then relevant treatment mechanism and possible direction of change." },
     observedAreas: { type: "array", items: { type: "string" }, description: "Only areas with supported findings; empty when unreadable." },
-    encouragement: { type: "string", description: "Invite the free 15-minute online consultation with Dr Ayda, with phone fallback." },
+    encouragement: { type: "string", description: "Invite the free 15-minute online consultation with our doctor, with phone fallback." },
   },
   required: ["suitability", "laxityFit", "skinQuality", "areaFit", "lowerFaceObscured", "jowlGrade", "neckType", "areaEnhancements", "framingAdequate", "focusFindings", "areaObservations", "headline", "narrative", "observedAreas", "encouragement"],
 } as const;

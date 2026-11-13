@@ -34,7 +34,7 @@ export function BookingCalendar({ calendarUrl = OFFER.calendarUrl, lead }: { cal
         <div className="overflow-hidden rounded-2xl border border-peach/20 bg-white shadow-soft">
           <iframe
             src={bookingUrl}
-            title="Book your free Endomax Lift online consultation with Dr Ayda"
+            title="Book your free Endomax Lift online consultation with our doctor"
             id="endomax-consult-calendar"
             referrerPolicy="no-referrer"
             loading="eager"
@@ -60,7 +60,7 @@ export function BookingCalendar({ calendarUrl = OFFER.calendarUrl, lead }: { cal
         Reserve your free online consultation
       </h3>
       <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-body/80">
-        Choose a time for your 15-minute online conversation with Dr Ayda.
+        Choose a time for your 15-minute online conversation with our doctor.
         If you prefer a phone call, contact the clinic after booking.
       </p>
 

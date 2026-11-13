@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   title:
     "Endomax Lift packages from £2,000 · Free online consultation · Harley Street Aesthetics",
   description:
-    "Endomax Lift packages from £2,000 at Harley Street Aesthetics. Explore payment options and book a free online consultation with Dr Ayda.",
+    "Endomax Lift packages from £2,000 at Harley Street Aesthetics. Explore payment options and book a free online consultation with our doctor.",
   // Ad retargeting landing page — keep it out of search results.
   robots: { index: false, follow: false },
 };
@@ -142,7 +142,7 @@ export default function OfferPage() {
                 Endomax Lift packages from £2,000
               </h2>
               <p className="mt-4 max-w-md text-sm leading-relaxed text-body">
-                Explore monthly payments with the calculator. Dr Ayda will
+                Explore monthly payments with the calculator. Our doctor will
                 discuss your goals in a free online consultation; the clinic
                 will confirm the treatment plan and final quote afterward.
               </p>
@@ -163,7 +163,7 @@ export default function OfferPage() {
               Book your free online consultation
             </h2>
             <p className="mx-auto mt-2 max-w-lg text-center text-sm text-body/80">
-              A free 15-minute online conversation with Dr Ayda about your
+              A free 15-minute online conversation with our doctor about your
               guide and goals. The clinic will confirm the next step and your
               treatment quote after the consultation.
             </p>

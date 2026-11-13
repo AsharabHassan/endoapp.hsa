@@ -43,13 +43,12 @@ export const CLINIC = {
   ] satisfies ClinicLocation[],
 } as const;
 
-/** Profile facts and portrait are from the clinic's London team page. */
+/** The consultation is with our doctor; no individual is named in the app or report. */
 export const CONSULTANT = {
-  name: "Dr Ayda Soltanzadeh",
-  role: "Consultant Dermatologist",
+  name: "Our doctor",
+  role: "Harley Street Aesthetics medical team",
   profile:
-    "Dr Ayda brings a clinical dermatology background and a considered approach to facial aesthetics. Your free online consultation is the place to discuss your photo guide, goals and next steps.",
-  image: "/images/dr-ayda-soltanzadeh.webp",
+    "Our doctor brings a considered, medical approach to facial aesthetics. Your free online consultation is the place to discuss your photo guide, goals and next steps.",
   profileUrl: "https://harleystreetaesthetic.co.uk/london/team",
 } as const;
 

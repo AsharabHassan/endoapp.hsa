@@ -63,7 +63,7 @@ export function OfferHero() {
         >
           You recently checked your Endomax Lift suitability with{" "}
           {CLINIC.name}. Your free consultation is the next step — book below
-          and Dr Ayda will discuss your guide, goals and next steps online.
+          and our doctor will discuss your guide, goals and next steps online.
         </motion.p>
 
         <motion.div

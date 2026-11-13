@@ -2,7 +2,7 @@
 // "Your lower-face profile": the TYPE of jowl and neck change the photo appears
 // consistent with, shown first in the result and the PDF — what it is, why it
 // happens, how the Endomax Lift helps, and how well that type typically fits the
-// treatment. Visual grading from a selfie only; Dr Ayda confirms at consultation.
+// treatment. Visual grading from a selfie only; our doctor confirms at consultation.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const JOWL_GRADES = ["none", "mild", "moderate", "advanced", "unclear"] as const;
@@ -17,7 +17,7 @@ export const FIT_LABEL: Record<EndoliftFit, string> = {
   strong: "Strong fit for Endomax Lift",
   good: "Good fit for Endomax Lift",
   partial: "Endomax Lift can help part of this",
-  review: "Dr Ayda to advise on the best approach",
+  review: "Our doctor to advise on the best approach",
 };
 
 export interface ProfileEntry {
@@ -61,7 +61,7 @@ export const JOWLS: Record<Exclude<JowlGrade, "unclear">, ProfileEntry> = {
     commonName: "heavy jowls",
     what: "Pronounced tissue hangs below the jaw line, with the lower face visibly heavier and the jaw edge largely lost.",
     why: "Long-standing skin laxity with significant descent of the deeper facial tissues and excess skin.",
-    howItHelps: "Endomax Lift can still tighten and refine the skin, but heavy descent with excess skin may need a combined plan — Dr Ayda will be honest about what each option can achieve for you.",
+    howItHelps: "Endomax Lift can still tighten and refine the skin, but heavy descent with excess skin may need a combined plan — our doctor will be honest about what each option can achieve for you.",
     fit: "review",
   },
 };
@@ -104,7 +104,7 @@ export const NECKS: Record<Exclude<NeckType, "unclear">, ProfileEntry> = {
     commonName: "vertical neck cords",
     what: "Vertical cord-like contours run down the front of the neck.",
     why: "The thin neck muscle (platysma) can separate and become more prominent with age, especially when the neck tenses.",
-    howItHelps: "Endomax Lift improves the skin around the bands, but the bands themselves come from muscle — Dr Ayda will look at your neck at rest and in motion and may combine it with a muscle-relaxing treatment.",
+    howItHelps: "Endomax Lift improves the skin around the bands, but the bands themselves come from muscle — our doctor will look at your neck at rest and in motion and may combine it with a muscle-relaxing treatment.",
     fit: "partial",
   },
 };

@@ -132,7 +132,7 @@ export function LeadGateScreen() {
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-[#665846]">
           Enter your details to see your guide. We&rsquo;ll email you a copy and
-          save it to your clinic record, so Dr Ayda has it ready for your free
+          save it to your clinic record, so our doctor has it ready for your free
           15-minute consultation &mdash; the next step in your journey.
         </p>
 
@@ -170,7 +170,7 @@ export function LeadGateScreen() {
               <PhoneCall size={13} className="mt-0.5 shrink-0 text-[#9a773e]" />
               <span>
                 Our team will call you {CALLBACK_PROMISE}{" "}
-                to book your consultation with Dr Ayda.
+                to book your consultation with our doctor.
               </span>
             </p>
           </div>

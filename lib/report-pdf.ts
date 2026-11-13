@@ -499,7 +499,7 @@ export function buildReportPdf(input: ReportInput): Blob {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8.5);
   doc.setTextColor(...P.body);
-  doc.text(`15 minutes online with Dr Ayda  ·  ${input.phone}`, M + 7, y + 12.5);
+  doc.text(`15 minutes online with our doctor  ·  ${input.phone}`, M + 7, y + 12.5);
   doc.link(M, y, CW, 17, { url: input.bookingUrl });
 
   footer();

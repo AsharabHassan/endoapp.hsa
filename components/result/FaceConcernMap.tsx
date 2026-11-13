@@ -132,7 +132,7 @@ export function FaceConcernMap() {
       <p className="mx-auto mt-1 max-w-md text-center text-[13px] leading-relaxed text-body/80">
         Mapped from your own photo, on your device.
         {focusCount > 0
-          ? " The highlighted areas are observations to discuss with Dr Ayda, who will assess whether treatment is suitable."
+          ? " The highlighted areas are observations to discuss with our doctor, who will assess whether treatment is suitable."
           : " Your clinician will confirm whether treatment is suitable."}
       </p>
 

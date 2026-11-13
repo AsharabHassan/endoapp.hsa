@@ -9,7 +9,7 @@ import { lowerFaceProfile } from "@/lib/lower-face-profile";
 
 /**
  * Top-of-result framing: the guide is step 2 of 4 and the consultation with
- * Dr Ayda is what turns it into a real plan. Stops clients treating the AI
+ * our doctor is what turns it into a real plan. Stops clients treating the AI
  * read as the end of the journey.
  */
 export function NextStepCard() {
@@ -45,7 +45,7 @@ export function NextStepCard() {
         </h2>
         <p className="mt-3 max-w-3xl text-sm leading-[1.8] text-[#625342]">
           Your guide names what&rsquo;s happening along your jawline and neck
-          and why. In your free 15-minute online consultation, Dr Ayda builds
+          and why. In your free 15-minute online consultation, our doctor builds
           your treatment plan around these findings &mdash; going through the
           detail with you, checking your medical history and suitability for
           Endomax Lift, and giving you a clear plan and price.
@@ -94,7 +94,7 @@ export function NextStepCard() {
           >
             <CalendarHeart size={18} /> Book my free consultation
           </a>
-          <p className="text-xs text-[#786954]">Free · 15 minutes online with Dr Ayda · No obligation to go ahead</p>
+          <p className="text-xs text-[#786954]">Free · 15 minutes online with our doctor · No obligation to go ahead</p>
         </div>
 
         <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-[#e2d3b6] bg-[#f8eedc]/70 p-4 sm:flex-row sm:items-center">

@@ -51,7 +51,6 @@ export interface ReportInput {
   bookingUrl: string;
   calculatorUrl?: string;
   logoDataUrl?: string | null;
-  doctorPhotoDataUrl?: string | null;
   doctorName?: string;
   doctorRole?: string;
   doctorProfile?: string;
@@ -446,10 +445,7 @@ export function buildReportPdf(input: ReportInput): Blob {
     ensure(34);
     doc.setFillColor(...P.panel);
     doc.roundedRect(M, y, CW, 30, 2, 2, "F");
-    if (input.doctorPhotoDataUrl) {
-      try { doc.addImage(input.doctorPhotoDataUrl, "JPEG", M + 3, y + 3, 24, 24); } catch { /* text remains */ }
-    }
-    const dx = input.doctorPhotoDataUrl ? M + 32 : M + 7;
+    const dx = M + 7;
     doc.setFont("times", "normal"); doc.setFontSize(12); doc.setTextColor(...P.heading);
     doc.text(input.doctorName, dx, y + 8);
     doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...P.gold);

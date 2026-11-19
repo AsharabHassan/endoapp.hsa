@@ -53,7 +53,7 @@ The direct GoHighLevel API calls in `lib/ghl-report.ts` (`GHL_API_TOKEN`, `GHL_L
 
 ### Booking
 Every booking link goes to the clinic CRM's free online consultation page, the same page for London and Glasgow (`CRM_BOOKING_URL` in `lib/constants.ts`). That covers the result page, `/offer`, the report email and the report PDF.
-The page can't be embedded, because the CRM sends `X-Frame-Options: DENY` and `frame-ancestors 'none'`. It also reads no name, email or phone from the address. So the booking section is a button that opens it in a new tab.
+The page is `https://app.harleystreetaesthetic.co.uk/book/harley-street-aesthetic/free-online-consultation-with-aesthetic-` (the CRM on the clinic's own address, which allows framing). The result page embeds it in an iframe, with an "Open the booking page" link under it as a fallback. `/offer` shows a button to it. It reads no name, email or phone from the address (only date, staff, menu, error), so nothing is prefilled.
 `NEXT_PUBLIC_BOOKING_URL`, `NEXT_PUBLIC_PHOREST_BOOKING_URL` and `NEXT_PUBLIC_OFFER_CALENDAR_URL` are no longer read.
 
 ## Tests & build

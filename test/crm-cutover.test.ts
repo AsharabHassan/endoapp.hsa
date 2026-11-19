@@ -5,7 +5,7 @@ import { BOOKING_URL, CRM_BOOKING_URL } from "@/lib/constants";
 import type { AnalyzeResult, Lead } from "@/lib/types";
 
 const CRM_PAGE =
-  "https://app.crm.strategyguys.agency/book/harley-street-aesthetic/free-online-consultation-with-aesthetic-";
+  "https://app.harleystreetaesthetic.co.uk/book/harley-street-aesthetic/free-online-consultation-with-aesthetic-";
 const LONDON = "https://crm.example.test/hooks/london";
 const GLASGOW = "https://crm.example.test/hooks/glasgow";
 const GHL = "https://services.leadconnectorhq.com/hooks/example";

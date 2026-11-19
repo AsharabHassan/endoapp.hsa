@@ -16,9 +16,12 @@ describe("result screen runtime", () => {
     const html = renderToStaticMarkup(<ResultScreen />);
     expect(html).toContain("Book free online consultation");
     expect(html).toContain('href="#consultation"');
-    // The CRM booking page can't be framed: a link that opens it, no iframe, no prefill.
-    expect(html).not.toContain("<iframe");
-    expect(html).toContain('href="https://app.crm.strategyguys.agency/book/harley-street-aesthetic/free-online-consultation-with-aesthetic-"');
+    // The CRM booking page is embedded (no prefill), with a plain link under it.
+    expect(html).toContain('id="endomax-consult-calendar"');
+    expect(html).toContain('src="https://app.harleystreetaesthetic.co.uk/book/harley-street-aesthetic/free-online-consultation-with-aesthetic-"');
+    expect(html).toContain('href="https://app.harleystreetaesthetic.co.uk/book/harley-street-aesthetic/free-online-consultation-with-aesthetic-"');
+    expect(html).toContain("Open the booking page");
+    expect(html).toContain('sandbox="allow-forms allow-scripts allow-same-origin');
     expect(html).not.toContain("first_name=");
     expect(html).not.toContain("filled in for you");
     // Journey framing: the guide is step 2 of 4, the consultation comes next.

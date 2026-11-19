@@ -67,7 +67,7 @@ export function ResultScreen() {
           <h2 id="consultation-title" className="mt-3 font-serif text-3xl !text-[#302719] sm:text-4xl">Book your free online consultation</h2>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[#625648]">Choose a time for your 15-minute online consultation with our doctor. A phone call is available if video does not suit you.</p>
         </div>
-        <BookingCalendar />
+        <BookingCalendar embed />
       </section>
 
       <div id="finance" className="mx-auto grid max-w-6xl gap-8 px-5 py-16 sm:px-8 lg:grid-cols-[.75fr_1fr] lg:items-center lg:py-24">

@@ -61,13 +61,12 @@ export const TRUST_MARKERS = [
 
 /**
  * The clinic's own CRM booking page for the free online consultation — the
- * same page for the London and the Glasgow site. It cannot be shown inside an
- * iframe (the CRM answers with X-Frame-Options: DENY and frame-ancestors
- * 'none') and it reads no name/email/phone from the address, so the app links
- * to it and opens it in a new tab.
+ * same page for the London and the Glasgow site. On the clinic's own address
+ * it may be framed, so the result page embeds it. It reads no name/email/phone
+ * from the address (only date, staff, menu, error), so nothing is prefilled.
  */
 export const CRM_BOOKING_URL =
-  "https://app.crm.strategyguys.agency/book/harley-street-aesthetic/free-online-consultation-with-aesthetic-";
+  "https://app.harleystreetaesthetic.co.uk/book/harley-street-aesthetic/free-online-consultation-with-aesthetic-";
 
 /**
  * Where every "Book" button, the booking section, the report email and the

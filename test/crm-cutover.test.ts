@@ -4,6 +4,9 @@ import { clinicForHost, leadWebhookTarget } from "@/lib/lead-webhook";
 import { BOOKING_URL, CRM_BOOKING_URL } from "@/lib/constants";
 import type { AnalyzeResult, Lead } from "@/lib/types";
 
+const crmLead = vi.hoisted(() => vi.fn(async (...args: unknown[]) => ({ ok: args.length > 0, tagged: true, contactId: 4773 })));
+vi.mock("@/lib/crm-lead", () => ({ ensureLeadInCrm: crmLead }));
+
 const CRM_PAGE =
   "https://app.harleystreetaesthetic.co.uk/book/harley-street-aesthetic/free-online-consultation-with-aesthetic-";
 const LONDON = "https://crm.example.test/hooks/london";
@@ -126,5 +129,25 @@ describe("POST /api/lead routing", () => {
     vi.stubEnv("CRM_WEBHOOK_URL_LONDON", LONDON);
     await post("endoapp.glasgow.harleystreetaesthetic.clinic");
     expect(fetchMock.mock.calls.map((call) => call[0])).toEqual([GHL]);
+  });
+
+  it("also upserts the contact through the CRM API, tagged with the site's clinic, when CRM_API_KEY is set", async () => {
+    crmLead.mockClear();
+    vi.stubEnv("CRM_WEBHOOK_URL_GLASGOW", GLASGOW);
+    vi.stubEnv("CRM_API_KEY", "crm-test-key");
+    const out = await post("endoapp.glasgow.harleystreetaesthetic.clinic");
+    expect(out).toEqual({ ok: true, delivered: true, routingEnsured: true });
+    expect(fetchMock.mock.calls.map((call) => call[0])).toEqual([GLASGOW]);
+    expect(crmLead).toHaveBeenCalledTimes(1);
+    const input = crmLead.mock.calls[0][0] as { tags: string[]; custom: Record<string, string>; source: string };
+    expect(input.source).toBe("Endomax Lift Suitability Analyzer · Glasgow");
+    expect(input.tags).toEqual(expect.arrayContaining(["endomax-analyzer", "endomax-great", "hsa-clinic-glasgow"]));
+    expect(input.custom).toMatchObject({ score: "88", assessment_label: "Strong candidate", hsa_marketing_consent: "false" });
+  });
+
+  it("makes no CRM API call when CRM_API_KEY is not set", async () => {
+    crmLead.mockClear();
+    await post("endoapp.harleystreetaesthetic.clinic");
+    expect(crmLead).not.toHaveBeenCalled();
   });
 });

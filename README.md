@@ -40,6 +40,8 @@ The **quiz-only path works with no configuration.** The photo + Claude narrative
 | `GHL_WEBHOOK_URL` | server | GoHighLevel inbound webhook (used only while this site's CRM webhook below is not set) |
 | `CRM_WEBHOOK_URL_LONDON` | server (optional) | the clinic CRM's inbound lead webhook for London; set it on the **London** project (endoapp.harleystreetaesthetic.clinic) |
 | `CRM_WEBHOOK_URL_GLASGOW` | server (optional) | the clinic CRM's inbound lead webhook for Glasgow; set it on the **Glasgow** project (endoapp.glasgow.harleystreetaesthetic.clinic) |
+| `CRM_API_KEY` | server (optional) | the clinic CRM's API key (Harley Street Aesthetics sub-account; same key on both projects; scopes `contacts.write`, `files.write`, `conversations.send`). See "Clinic CRM API" below |
+| `CRM_API_BASE` / `CRM_ACCOUNT` | server (optional) | CRM API address (default `https://app.crm.strategyguys.agency/api/v1`; keep the main address, clinic domains cap uploads at 5 MB) and sub-account slug (default `harley-street-aesthetic`) |
 | `NEXT_PUBLIC_SITE_URL` | public | canonical / OG URL |
 
 ### Leads: CRM or GoHighLevel
@@ -49,7 +51,13 @@ If that clinic's `CRM_WEBHOOK_URL_*` is set, it posts the lead there. If not, it
 The payload is the same either way, meta fields included. So each project needs only its own city's variable. A London variable on the Glasgow project is never used: Glasgow leads then fall back to GoHighLevel, they are not sent to London.
 A blank value counts as not set. A value that is not an `https://` URL fails env validation.
 
-The direct GoHighLevel API calls in `lib/ghl-report.ts` (`GHL_API_TOKEN`, `GHL_LOCATION_ID`, `GHL_REPORT_FIELD_KEY`) are unchanged by the CRM cutover.
+The direct GoHighLevel API calls in `lib/ghl-report.ts` (`GHL_API_TOKEN`, `GHL_LOCATION_ID`, `GHL_REPORT_FIELD_KEY`) are used only while `CRM_API_KEY` is unset.
+
+### Clinic CRM API (replaces the GHL API)
+When `CRM_API_KEY` is set:
+- `/api/lead` also upserts the contact through the CRM API (`lib/crm-lead.ts`), next to the webhook above: the lead's tags plus `hsa-clinic-london|glasgow` (from the site's address), and its answers and results in CRM custom fields (`lib/crm-fields.ts`: `score`, `suitability_score`, `assessment_label`, `assessment_zones`, `hsa_pigmentation_summary`, `hsa_marketing_consent`, `hsa_meta_event_id`, `time_of_form_submission`, `form_submitted_treatment`; unmapped payload fields are listed in `UNMAPPED_PAYLOAD_FIELDS`).
+- `/api/report` goes to the CRM instead of GoHighLevel (`lib/crm-report.ts`): upsert → `POST /contacts/{id}/files` (PDF, `external_id` = a hash of the PDF so a retry never duplicates it) → the file's private patient link (`public_url`) into `facial_app_report_pdf` → note with the link → the same email as before from the CRM, with the link instead of an attachment.
+- A CRM failure is logged and never fails the patient's request; each call is retried once on a 5xx answer or a timeout.
 
 ### Booking
 Every booking link goes to the clinic CRM's free online consultation page, the same page for London and Glasgow (`CRM_BOOKING_URL` in `lib/constants.ts`). That covers the result page, `/offer`, the report email and the report PDF.

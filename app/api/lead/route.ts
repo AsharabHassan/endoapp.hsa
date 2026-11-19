@@ -6,6 +6,9 @@ import { createHash } from "node:crypto";
 import { normalizePhone, sendWebsiteLead } from "@/lib/meta-conversions";
 import { readConsultationRequest } from "@/lib/consultation-consent";
 import { leadWebhookTarget, requestClinic, type LeadWebhookTarget } from "@/lib/lead-webhook";
+import { crmConfigured } from "@/lib/crm-api";
+import { crmLeadCustomFields } from "@/lib/crm-fields";
+import { ensureLeadInCrm, type CrmLeadResult } from "@/lib/crm-lead";
 
 export const runtime = "nodejs";
 
@@ -73,6 +76,17 @@ export async function POST(request: Request): Promise<Response> {
     target = undefined;
   }
 
+  // The clinic CRM's API (CRM_API_KEY): the contact with its tags (plus the
+  // site's clinic) and its answers in custom fields, alongside the webhook.
+  const crmPromise: Promise<CrmLeadResult | null> = crmConfigured()
+    ? ensureLeadInCrm({
+        lead: body.lead,
+        source: `${payload.source} · ${clinic === "glasgow" ? "Glasgow" : "London"}`,
+        tags: [...payload.tags, `hsa-clinic-${clinic}`],
+        custom: crmLeadCustomFields(payload, { metaEventId: payload.meta_event_id }),
+      })
+    : Promise.resolve(null);
+
   let delivered = false;
   if (target) {
     delivered = await deliver(target.url, payload);
@@ -80,6 +94,9 @@ export async function POST(request: Request): Promise<Response> {
   } else {
     console.warn("[lead] no lead webhook set (CRM_WEBHOOK_URL_LONDON / CRM_WEBHOOK_URL_GLASGOW / GHL_WEBHOOK_URL); lead not forwarded", { clinic });
   }
+  const crm = await crmPromise;
+  if (crm && !crm.ok) console.error("[lead] CRM contact failed", { clinic, error: crm.error });
+  else if (crm?.error) console.warn("[lead] CRM contact incomplete", { clinic, error: crm.error });
 
   if (delivered && payload.meta_event_id) {
     const hash = (value: unknown) => typeof value === "string" && value.trim()
@@ -97,5 +114,5 @@ export async function POST(request: Request): Promise<Response> {
     };
     after(async () => { await sendWebsiteLead(event); });
   }
-  return Response.json({ ok: true, delivered });
+  return Response.json(crm ? { ok: true, delivered, routingEnsured: crm.ok && crm.tagged === true } : { ok: true, delivered });
 }

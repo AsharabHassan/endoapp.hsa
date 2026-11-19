@@ -1,7 +1,15 @@
 import { deliverReportToGhl } from "@/lib/ghl-report";
+import { crmConfigured } from "@/lib/crm-api";
+import { deliverReportToCrm } from "@/lib/crm-report";
+import { requestClinic } from "@/lib/lead-webhook";
 import { CLINIC, BOOKING_URL } from "@/lib/constants";
 
 export const runtime = "nodejs";
+
+/** For the report link in the email's href (the CRM returns an https URL). */
+function escapeAttr(value: string): string {
+  return value.replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
 
 interface ReportRequest {
   lead?: {
@@ -40,11 +48,16 @@ export async function POST(request: Request): Promise<Response> {
   const fileName = `Endomax-Lift-Report-${safeName}.pdf`;
   const subject = `${first || "Your"} Endomax Lift suitability report`;
 
-  const emailHtml = `
+  // GoHighLevel attaches the PDF; the CRM sends the patient's private link to it.
+  const reportEmailHtml = (reportUrl?: string) => `
     <div style="font-family:Helvetica,Arial,sans-serif;color:#1c1a16;line-height:1.6">
       <p>Hi ${first || "there"},</p>
       <p>Thank you for taking the Endomax Lift suitability analysis at
-      <strong>${CLINIC.name}</strong>. Your personalised report is attached as a PDF.</p>
+      <strong>${CLINIC.name}</strong>. ${
+        reportUrl
+          ? `Your personalised report is ready: <a href="${escapeAttr(reportUrl)}" style="color:#b8902a">open your report (PDF)</a>.`
+          : "Your personalised report is attached as a PDF."
+      }</p>
       <p>It's a guide to help you prepare — your suitability is always confirmed in
       person. When you're ready, book your free, no-pressure consultation and we'll
       talk you through everything.</p>
@@ -57,7 +70,7 @@ export async function POST(request: Request): Promise<Response> {
   if (score !== undefined) noteParts.push(`(${score}/100)`);
   const noteBody = `${noteParts.join(" ")}: {url}`;
 
-  const result = await deliverReportToGhl({
+  const delivery = {
     firstName: first,
     lastName: last,
     email: lead.email,
@@ -65,13 +78,26 @@ export async function POST(request: Request): Promise<Response> {
     pdfBase64: body.pdfBase64,
     fileName,
     subject,
-    emailHtml,
     noteBody,
-  });
+  };
+  // The clinic CRM when CRM_API_KEY is set, else GoHighLevel as before.
+  const destination = crmConfigured() ? "CRM" : "GHL";
+  const clinic = requestClinic(request);
+  const result =
+    destination === "CRM"
+      ? await deliverReportToCrm({
+          ...delivery,
+          source: `Endomax Lift Suitability Analyzer · ${clinic === "glasgow" ? "Glasgow" : "London"}`,
+          emailHtml: reportEmailHtml,
+          fileLabel: "Endomax Lift suitability report",
+        })
+      : await deliverReportToGhl({ ...delivery, emailHtml: reportEmailHtml() });
 
   // Surface failures in the server log without leaking the PDF.
   if (!result.ok && !result.skipped) {
-    console.error("[api/report] GHL delivery failed:", result.error);
+    console.error(`[api/report] ${destination} delivery failed:`, result.error);
+  } else if (result.ok && result.error) {
+    console.warn(`[api/report] ${destination} delivery incomplete:`, result.error);
   }
   return Response.json(result);
 }

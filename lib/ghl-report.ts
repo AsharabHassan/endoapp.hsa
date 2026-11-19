@@ -38,6 +38,8 @@ export interface DeliverResult {
   contactId?: string;
   emailed?: boolean;
   noted?: boolean;
+  /** CRM path only: the contact's tags were added. */
+  tagged?: boolean;
   error?: string;
 }
 

@@ -9,10 +9,14 @@ import { leadWebhookTarget, requestClinic, type LeadWebhookTarget } from "@/lib/
 import { crmConfigured } from "@/lib/crm-api";
 import { crmLeadCustomFields } from "@/lib/crm-fields";
 import { ensureLeadInCrm, type CrmLeadResult } from "@/lib/crm-lead";
+import { isAllowedAppRequest, rateLimited } from "@/lib/request-guard";
 
 export const runtime = "nodejs";
 
 const RETRIES = 3;
+/** Per client address; generous for a household sharing one connection. */
+const LEAD_LIMIT = 10;
+const LEAD_WINDOW_MS = 10 * 60_000;
 
 async function deliver(url: string, payload: unknown): Promise<boolean> {
   for (let attempt = 0; attempt < RETRIES; attempt++) {
@@ -37,6 +41,14 @@ async function deliver(url: string, payload: unknown): Promise<boolean> {
 // user: delivery failures are logged server-side, and we still return 200 so the
 // result screen unlocks regardless.
 export async function POST(request: Request): Promise<Response> {
+  // Only this app's own pages may create a contact in the clinic's CRM.
+  if (!isAllowedAppRequest(request)) {
+    return Response.json({ ok: false, error: "forbidden-lead-origin" }, { status: 403 });
+  }
+  if (rateLimited(request, "lead", LEAD_LIMIT, LEAD_WINDOW_MS)) {
+    return Response.json({ ok: false, error: "rate-limited" }, { status: 429 });
+  }
+
   let body: LeadRequest;
   try {
     body = (await request.json()) as LeadRequest;

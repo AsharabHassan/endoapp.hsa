@@ -3,8 +3,13 @@ import { crmConfigured } from "@/lib/crm-api";
 import { deliverReportToCrm } from "@/lib/crm-report";
 import { requestClinic } from "@/lib/lead-webhook";
 import { CLINIC, BOOKING_URL } from "@/lib/constants";
+import { isAllowedAppRequest, rateLimited } from "@/lib/request-guard";
 
 export const runtime = "nodejs";
+
+/** One patient gets one report; a few retries are plenty. */
+const REPORT_LIMIT = 5;
+const REPORT_WINDOW_MS = 10 * 60_000;
 
 /** For the report link in the email's href (the CRM returns an https URL). */
 function escapeAttr(value: string): string {
@@ -27,6 +32,21 @@ interface ReportRequest {
 // into GoHighLevel, attach it to the contact (note) and email the client a copy.
 // Always returns 200 with a status summary so it never blocks the lead flow.
 export async function POST(request: Request): Promise<Response> {
+  // Only this app's own pages may make the clinic's account email a report;
+  // otherwise anyone could POST any address + PDF and use it as a mail relay.
+  if (!isAllowedAppRequest(request)) {
+    return Response.json(
+      { ok: false, skipped: true, error: "forbidden-report-origin" },
+      { status: 403 },
+    );
+  }
+  if (rateLimited(request, "report", REPORT_LIMIT, REPORT_WINDOW_MS)) {
+    return Response.json(
+      { ok: false, skipped: true, error: "rate-limited" },
+      { status: 429 },
+    );
+  }
+
   let body: ReportRequest;
   try {
     body = (await request.json()) as ReportRequest;

@@ -17,7 +17,7 @@ const CRM_PAGE =
 function reportRequest(host = "endoapp.harleystreetaesthetic.clinic"): Request {
   return new Request(`https://${host}/api/report`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", host },
+    headers: { "Content-Type": "application/json", host, origin: `https://${host}` },
     body: JSON.stringify({
       lead: { firstName: "Jane", lastName: "Doe", email: "jane@example.com", phone: "07700900123" },
       suitabilityLabel: "Strong candidate",

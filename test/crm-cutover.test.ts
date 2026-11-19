@@ -100,7 +100,7 @@ describe("POST /api/lead routing", () => {
     const { POST } = await import("@/app/api/lead/route");
     const res = await POST(new Request(`https://${host}/api/lead`, {
       method: "POST",
-      headers: { "content-type": "application/json", host },
+      headers: { "content-type": "application/json", host, origin: `https://${host}` },
       body: JSON.stringify({ lead, result }),
     }));
     return (await res.json()) as { ok: boolean; delivered: boolean };

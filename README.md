@@ -37,9 +37,24 @@ The **quiz-only path works with no configuration.** The photo + Claude narrative
 |---|---|---|
 | `ANTHROPIC_API_KEY` | server | Claude Vision narrative |
 | `ANTHROPIC_MODEL` | server (optional) | defaults to `claude-sonnet-4-6` |
-| `GHL_WEBHOOK_URL` | server | GoHighLevel inbound webhook |
-| `NEXT_PUBLIC_BOOKING_URL` | public | booking link |
+| `GHL_WEBHOOK_URL` | server | GoHighLevel inbound webhook (used only while this site's CRM webhook below is not set) |
+| `CRM_WEBHOOK_URL_LONDON` | server (optional) | the clinic CRM's inbound lead webhook for London; set it on the **London** project (endoapp.harleystreetaesthetic.clinic) |
+| `CRM_WEBHOOK_URL_GLASGOW` | server (optional) | the clinic CRM's inbound lead webhook for Glasgow; set it on the **Glasgow** project (endoapp.glasgow.harleystreetaesthetic.clinic) |
 | `NEXT_PUBLIC_SITE_URL` | public | canonical / OG URL |
+
+### Leads: CRM or GoHighLevel
+The app is deployed twice from the same code: two Vercel projects, `endoapp-hsa` (London) and `endoapp-hsa-dyyl` (Glasgow).
+`/api/lead` reads the clinic from the site's address (a host with a `glasgow` label is Glasgow, anything else London).
+If that clinic's `CRM_WEBHOOK_URL_*` is set, it posts the lead there. If not, it posts to `GHL_WEBHOOK_URL` as before.
+The payload is the same either way, meta fields included. So each project needs only its own city's variable. A London variable on the Glasgow project is never used: Glasgow leads then fall back to GoHighLevel, they are not sent to London.
+A blank value counts as not set. A value that is not an `https://` URL fails env validation.
+
+The direct GoHighLevel API calls in `lib/ghl-report.ts` (`GHL_API_TOKEN`, `GHL_LOCATION_ID`, `GHL_REPORT_FIELD_KEY`) are unchanged by the CRM cutover.
+
+### Booking
+Every booking link goes to the clinic CRM's free online consultation page, the same page for London and Glasgow (`CRM_BOOKING_URL` in `lib/constants.ts`). That covers the result page, `/offer`, the report email and the report PDF.
+The page can't be embedded, because the CRM sends `X-Frame-Options: DENY` and `frame-ancestors 'none'`. It also reads no name, email or phone from the address. So the booking section is a button that opens it in a new tab.
+`NEXT_PUBLIC_BOOKING_URL`, `NEXT_PUBLIC_PHOREST_BOOKING_URL` and `NEXT_PUBLIC_OFFER_CALENDAR_URL` are no longer read.
 
 ## Tests & build
 ```bash

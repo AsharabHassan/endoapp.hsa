@@ -59,11 +59,23 @@ export const TRUST_MARKERS = [
   "0% finance available",
 ] as const;
 
-/** Booking + site URLs (overridable via public env at deploy). */
-export const BOOKING_URL =
-  process.env.NEXT_PUBLIC_BOOKING_URL ??
-  process.env.NEXT_PUBLIC_PHOREST_BOOKING_URL ??
-  "https://harleystreetaesthetic.co.uk/london/book";
+/**
+ * The clinic's own CRM booking page for the free online consultation — the
+ * same page for the London and the Glasgow site. It cannot be shown inside an
+ * iframe (the CRM answers with X-Frame-Options: DENY and frame-ancestors
+ * 'none') and it reads no name/email/phone from the address, so the app links
+ * to it and opens it in a new tab.
+ */
+export const CRM_BOOKING_URL =
+  "https://app.crm.strategyguys.agency/book/harley-street-aesthetic/free-online-consultation-with-aesthetic-";
+
+/**
+ * Where every "Book" button, the booking section, the report email and the
+ * report PDF send the patient. Deliberately not read from env any more
+ * (NEXT_PUBLIC_BOOKING_URL / NEXT_PUBLIC_PHOREST_BOOKING_URL pointed at the
+ * GoHighLevel calendar), so a stale hosting value cannot undo the CRM cutover.
+ */
+export const BOOKING_URL = CRM_BOOKING_URL;
 
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ??
@@ -160,14 +172,6 @@ export const PRICE_GUIDE = {
 export const OFFER = {
   /** Package starting price in GBP (numeric, used by the calculator). */
   price: 2000,
-  /**
-   * GoHighLevel booking-calendar widget URL to embed on the offer page.
-   * PLACEHOLDER: HSA has no calendar widget configured yet — while this is
-   * empty the page shows a booking panel (phone / WhatsApp / booking site)
-   * instead of an embedded calendar. Set NEXT_PUBLIC_OFFER_CALENDAR_URL to a
-   * GHL widget URL (links.…/widget/bookings/…) to enable the in-page calendar.
-   */
-  calendarUrl: process.env.NEXT_PUBLIC_OFFER_CALENDAR_URL ?? "",
   /**
    * Instagram reel with an HSA patient's Endomax Lift testimonial.
    * PLACEHOLDER: empty until HSA provides their own reel — the video card is

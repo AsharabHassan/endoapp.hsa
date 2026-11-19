@@ -16,7 +16,6 @@ import { DoctorProfile } from "@/components/result/DoctorProfile";
 
 import { DisclaimerBanner } from "@/components/compliance/DisclaimerBanner";
 import { FinanceCalculator } from "@/components/offer/FinanceCalculator";
-import { BOOKING_URL } from "@/lib/constants";
 
 
 
@@ -67,9 +66,8 @@ export function ResultScreen() {
           <p className="text-[11px] font-bold uppercase tracking-[.2em] text-[#95743d]">Step 3 of 4 · Your free consultation</p>
           <h2 id="consultation-title" className="mt-3 font-serif text-3xl !text-[#302719] sm:text-4xl">Book your free online consultation</h2>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[#625648]">Choose a time for your 15-minute online consultation with our doctor. A phone call is available if video does not suit you.</p>
-          {lead && <p className="mt-3 text-xs text-[#755f3f]">Your contact details will be filled in for you. Please check them before confirming your appointment.</p>}
         </div>
-        <BookingCalendar calendarUrl={BOOKING_URL} lead={lead} />
+        <BookingCalendar />
       </section>
 
       <div id="finance" className="mx-auto grid max-w-6xl gap-8 px-5 py-16 sm:px-8 lg:grid-cols-[.75fr_1fr] lg:items-center lg:py-24">

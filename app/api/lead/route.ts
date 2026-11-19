@@ -5,6 +5,7 @@ import { after } from "next/server";
 import { createHash } from "node:crypto";
 import { normalizePhone, sendWebsiteLead } from "@/lib/meta-conversions";
 import { readConsultationRequest } from "@/lib/consultation-consent";
+import { leadWebhookTarget, requestClinic, type LeadWebhookTarget } from "@/lib/lead-webhook";
 
 export const runtime = "nodejs";
 
@@ -28,7 +29,8 @@ async function deliver(url: string, payload: unknown): Promise<boolean> {
   return false;
 }
 
-// POST /api/lead — forward the qualified lead to GoHighLevel. Never blocks the
+// POST /api/lead — forward the qualified lead to the clinic's CRM (or to
+// GoHighLevel while the CRM webhook is not set). Never blocks the
 // user: delivery failures are logged server-side, and we still return 200 so the
 // result screen unlocks regardless.
 export async function POST(request: Request): Promise<Response> {
@@ -61,19 +63,22 @@ export async function POST(request: Request): Promise<Response> {
     meta_event_source_url: "https://endoapp.harleystreetaesthetic.clinic/",
   };
 
-  let webhook: string | undefined;
+  // The clinic's CRM webhook when set (London or Glasgow, from the site's
+  // address), else GoHighLevel as before. Same payload either way.
+  const clinic = requestClinic(request);
+  let target: LeadWebhookTarget | undefined;
   try {
-    webhook = serverEnv().GHL_WEBHOOK_URL;
+    target = leadWebhookTarget(clinic, serverEnv());
   } catch {
-    webhook = undefined;
+    target = undefined;
   }
 
   let delivered = false;
-  if (webhook) {
-    delivered = await deliver(webhook, payload);
-    if (!delivered) console.error("[lead] GHL delivery failed");
+  if (target) {
+    delivered = await deliver(target.url, payload);
+    if (!delivered) console.error(`[lead] ${target.destination.toUpperCase()} delivery failed`, { clinic });
   } else {
-    console.warn("[lead] GHL_WEBHOOK_URL not set; lead not forwarded");
+    console.warn("[lead] no lead webhook set (CRM_WEBHOOK_URL_LONDON / CRM_WEBHOOK_URL_GLASGOW / GHL_WEBHOOK_URL); lead not forwarded", { clinic });
   }
 
   if (delivered && payload.meta_event_id) {
